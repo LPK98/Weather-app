@@ -1,0 +1,210 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<div class="p-4 lg:p-8">
+  <div class="grid grid-cols-12 gap-6">
+    <!-- Left Sidebar: Alert Stats & Settings -->
+    <div class="col-span-12 lg:col-span-3 space-y-6">
+      <!-- System Status -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span
+              class="size-2.5 bg-green-500 rounded-full animate-pulse"
+            ></span>
+            <span class="text-xs font-bold text-green-500 uppercase"
+              >System Live</span
+            >
+          </div>
+          <span class="text-xs text-muted-text" id="last-updated"
+            >Updated just now</span
+          >
+        </div>
+
+        <!-- Alert Counts -->
+        <h3
+          class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3"
+        >
+          Active Alerts
+        </h3>
+        <div class="grid grid-cols-3 gap-2" id="alert-counts">
+          <div class="bg-red-500/10 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-red-500" id="red-count">0</p>
+            <p class="text-[10px] font-bold text-red-500/70 uppercase">Red</p>
+          </div>
+          <div class="bg-orange-500/10 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-orange-500" id="orange-count">
+              0
+            </p>
+            <p class="text-[10px] font-bold text-orange-500/70 uppercase">
+              Orange
+            </p>
+          </div>
+          <div class="bg-yellow-500/10 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-yellow-500" id="yellow-count">
+              0
+            </p>
+            <p class="text-[10px] font-bold text-yellow-500/70 uppercase">
+              Yellow
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert Settings -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
+        <h3
+          class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4"
+        >
+          Alert Settings
+        </h3>
+
+        <!-- Notification Channels -->
+        <div class="space-y-4 mb-6">
+          <div class="flex items-center justify-between">
+            <span class="text-sm">Emergency Monsoon</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="toggle-monsoon"
+                checked
+                class="sr-only peer"
+              />
+              <div
+                class="w-10 h-6 bg-slate-300 dark:bg-slate-600 peer-checked:bg-primary rounded-full peer-focus:ring-2 peer-focus:ring-primary/50 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"
+              ></div>
+            </label>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm">SMS Alerts</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggle-sms" class="sr-only peer" />
+              <div
+                class="w-10 h-6 bg-slate-300 dark:bg-slate-600 peer-checked:bg-primary rounded-full peer-focus:ring-2 peer-focus:ring-primary/50 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"
+              ></div>
+            </label>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm">Email Summary</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="toggle-email"
+                checked
+                class="sr-only peer"
+              />
+              <div
+                class="w-10 h-6 bg-slate-300 dark:bg-slate-600 peer-checked:bg-primary rounded-full peer-focus:ring-2 peer-focus:ring-primary/50 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"
+              ></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Monitoring Regions -->
+        <h4
+          class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3"
+        >
+          Monitoring Regions
+        </h4>
+        <div class="flex flex-wrap gap-2 mb-4" id="region-tags">
+          <!-- Populated by JS -->
+        </div>
+        <button
+          class="text-primary text-xs font-bold hover:underline"
+          id="add-district-btn"
+        >
+          + Add District
+        </button>
+
+        <button
+          class="w-full mt-6 bg-primary hover:bg-primary/90 text-white py-2 rounded-lg text-sm font-bold transition-colors"
+          id="save-prefs-btn"
+        >
+          Save Preferences
+        </button>
+      </div>
+
+      <!-- Safety Protocols -->
+      <div
+        class="bg-primary rounded-xl p-6 text-white shadow-lg shadow-primary/20"
+      >
+        <h3 class="font-bold mb-2">Safety Protocols</h3>
+        <p class="text-sm text-white/80 mb-4 leading-relaxed">
+          Access comprehensive emergency procedures and evacuation routes for
+          your monitored regions.
+        </p>
+        <button
+          class="w-full bg-white/20 hover:bg-white/30 py-2 rounded-lg text-xs font-bold transition-colors"
+        >
+          Open Safety Guide
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content: Alert Cards -->
+    <div class="col-span-12 lg:col-span-9">
+      <!-- Filter Bar -->
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <button
+          class="filter-btn px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold"
+          data-severity="all"
+        >
+          All Alerts
+        </button>
+        <button
+          class="filter-btn px-4 py-2 rounded-lg bg-red-500/10 text-red-500 text-sm font-bold hover:bg-red-500/20 transition-colors"
+          data-severity="RED"
+        >
+          Red Alerts
+        </button>
+        <button
+          class="filter-btn px-4 py-2 rounded-lg bg-orange-500/10 text-orange-500 text-sm font-bold hover:bg-orange-500/20 transition-colors"
+          data-severity="ORANGE"
+        >
+          Orange
+        </button>
+        <button
+          class="filter-btn px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-600 text-sm font-bold hover:bg-yellow-500/20 transition-colors"
+          data-severity="YELLOW"
+        >
+          Yellow
+        </button>
+      </div>
+
+      <!-- Alert Cards Container -->
+      <div class="flex flex-col gap-6" id="alert-cards">
+        <div class="flex items-center justify-center py-12">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+
+      <!-- Load More -->
+      <div class="text-center mt-6">
+        <button
+          class="text-primary text-sm font-bold hover:underline"
+          id="load-more-btn"
+          style="display: none"
+        >
+          Show older alerts
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Emergency Footer -->
+<div
+  class="border-t border-slate-200 dark:border-border-dark bg-white dark:bg-card-dark px-8 py-4"
+>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-red-500">emergency</span>
+      <p class="text-sm">
+        <strong>Emergency Hotline:</strong>
+        <span class="text-primary font-bold">117</span>
+      </p>
+    </div>
+    <p class="text-xs text-muted-text">LankaWeather Alert System &copy; 2026</p>
+  </div>
+</div>
+{% endblock %} {% block extra_scripts %}
+<script src="{% static 'js/alerts.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,89 @@
+/* LankaWeather - Main Stylesheet */
+
+/* Loading spinner */
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(96, 122, 251, 0.2);
+  border-top-color: #607afb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(96, 122, 251, 0.25);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(96, 122, 251, 0.5);
+}
+
+/* Sidebar active nav item */
+nav a.active {
+  background: rgba(96, 122, 251, 0.12);
+  color: #607afb !important;
+}
+
+/* Card hover */
+.hover-card {
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Print styles */
+@media print {
+  nav,
+  header,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+/* Transition for theme toggle */
+body {
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+/* Alert severity badges */
+.severity-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+.severity-orange {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+}
+.severity-yellow {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+/* Chart tooltip fix in dark mode */
+.dark .chartjs-tooltip {
+  background: #181d35 !important;
+}

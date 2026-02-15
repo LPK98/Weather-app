@@ -1,0 +1,245 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<div class="p-4 lg:p-8">
+  <div class="grid grid-cols-12 gap-6">
+    <!-- Left Column: Current Weather Hero -->
+    <div class="col-span-12 xl:col-span-4 space-y-6">
+      <div
+        class="relative group overflow-hidden rounded-xl h-[480px] flex flex-col shadow-xl"
+        id="weather-hero"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-primary/80 via-indigo-600/70 to-purple-700/80"
+          id="hero-bg"
+        ></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"
+        ></div>
+        <div
+          class="relative flex-1 p-8 flex flex-col justify-between text-white"
+        >
+          <div class="flex justify-between items-start">
+            <div>
+              <h2 class="text-3xl font-bold" id="city-name">Loading...</h2>
+              <p class="text-white/70 text-sm font-medium" id="city-province">
+                Sri Lanka
+              </p>
+            </div>
+            <div
+              class="bg-white/20 backdrop-blur-md rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wider flex items-center gap-1"
+            >
+              <span
+                class="size-2 bg-green-400 rounded-full animate-pulse"
+              ></span>
+              Live
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-end gap-2">
+              <span
+                class="text-8xl font-bold tracking-tighter"
+                id="current-temp"
+                >--°</span
+              >
+              <div class="mb-4">
+                <span
+                  class="material-symbols-outlined text-4xl text-primary"
+                  id="weather-icon"
+                  >cloud</span
+                >
+                <p class="text-xl font-medium" id="weather-condition">
+                  Loading
+                </p>
+              </div>
+            </div>
+            <div
+              class="grid grid-cols-2 gap-4 pt-6 border-t border-white/20"
+              id="weather-stats"
+            >
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-white/60"
+                  >humidity_mid</span
+                >
+                <div>
+                  <p
+                    class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                  >
+                    Humidity
+                  </p>
+                  <p class="font-bold" id="humidity">--%</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-white/60">air</span>
+                <div>
+                  <p
+                    class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                  >
+                    Wind
+                  </p>
+                  <p class="font-bold" id="wind">-- km/h</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-white/60"
+                  >visibility</span
+                >
+                <div>
+                  <p
+                    class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                  >
+                    Visibility
+                  </p>
+                  <p class="font-bold" id="visibility">-- km</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-white/60"
+                  >wb_sunny</span
+                >
+                <div>
+                  <p
+                    class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                  >
+                    UV Index
+                  </p>
+                  <p class="font-bold" id="uv-index">--</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-white/80 text-sm italic" id="weather-description">
+              Fetching latest weather data...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini Map of Sri Lanka -->
+      <a
+        href="{% url 'explorer' %}"
+        class="block bg-white dark:bg-card-dark p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+      >
+        <h3
+          class="font-bold text-sm mb-4 uppercase tracking-wider text-slate-500 dark:text-slate-400"
+        >
+          Regional Explorer Map
+        </h3>
+        <div
+          class="bg-slate-200 dark:bg-background-dark rounded-lg h-48 relative overflow-hidden flex items-center justify-center"
+        >
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-primary/20 via-indigo-500/10 to-purple-500/20"
+          ></div>
+          <div class="absolute top-1/4 left-1/2 -translate-x-1/2 text-primary">
+            <span class="material-symbols-outlined text-xl">location_on</span>
+          </div>
+          <div class="absolute bottom-1/4 left-1/3 text-severity-yellow">
+            <span class="material-symbols-outlined text-xl">location_on</span>
+          </div>
+          <div class="absolute top-1/2 right-1/4 text-primary">
+            <span class="material-symbols-outlined text-xl">location_on</span>
+          </div>
+          <p
+            class="relative z-10 text-xs font-bold bg-white/80 dark:bg-black/40 px-3 py-1.5 rounded-lg"
+          >
+            <span class="material-symbols-outlined text-sm align-middle mr-1"
+              >explore</span
+            >
+            Tap to explore district weather
+          </p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Center Column: Forecasts -->
+    <div class="col-span-12 xl:col-span-5 space-y-6">
+      <!-- Hourly Forecast -->
+      <div
+        class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6 overflow-hidden"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-lg font-bold">Hourly Forecast</h2>
+          <span class="text-primary text-sm font-bold">Next 24h</span>
+        </div>
+        <div
+          class="flex gap-6 overflow-x-auto pb-4 custom-scrollbar"
+          id="hourly-container"
+        >
+          <div class="flex items-center justify-center w-full py-8">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7-Day Forecast -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-bold mb-6">7-Day Forecast</h2>
+        <div class="space-y-4" id="daily-container">
+          <div class="flex items-center justify-center py-8">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Alerts & Extra Info -->
+    <div class="col-span-12 xl:col-span-3 space-y-6">
+      <!-- Local Alerts -->
+      <div
+        class="bg-white dark:bg-card-dark rounded-xl shadow-sm overflow-hidden"
+      >
+        <div
+          class="p-4 bg-red-500/10 dark:bg-red-500/20 flex items-center gap-3"
+        >
+          <span class="material-symbols-outlined text-red-500">warning</span>
+          <h3
+            class="font-bold text-red-600 dark:text-red-400 text-sm uppercase tracking-wide"
+          >
+            Weather Alerts
+          </h3>
+        </div>
+        <div class="p-6 space-y-4" id="alerts-container">
+          <div class="flex items-center justify-center py-4">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Tracking -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
+        <h3
+          class="font-bold text-sm mb-4 uppercase tracking-wider text-slate-500 dark:text-slate-400"
+        >
+          Activity Outlook
+        </h3>
+        <div class="space-y-4" id="activities-container">
+          <div class="flex items-center justify-center py-4">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fishermen Warning -->
+      <div
+        class="bg-primary rounded-xl p-6 text-white shadow-lg shadow-primary/20"
+      >
+        <h3 class="font-bold mb-2">Fishermen Warning</h3>
+        <p
+          class="text-sm text-white/80 mb-4 leading-relaxed"
+          id="fishermen-warning"
+        >
+          Naval and fishing communities are advised not to venture into the deep
+          sea areas until further notice.
+        </p>
+        <a
+          href="{% url 'alerts' %}"
+          class="block w-full bg-white/20 hover:bg-white/30 py-2 rounded-lg text-xs font-bold transition-colors text-center"
+        >
+          Read Full Notice
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_scripts %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

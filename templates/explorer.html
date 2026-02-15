@@ -1,0 +1,189 @@
+{% extends "base.html" %} {% load static %} {% block extra_head %}
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  #map {
+    height: 100%;
+    width: 100%;
+    border-radius: 0.75rem;
+    z-index: 0;
+  }
+  .leaflet-tile-pane {
+    filter: saturate(0.5) brightness(0.85);
+  }
+  .city-marker {
+    background: #607afb;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    box-shadow: 0 2px 8px rgba(96, 122, 251, 0.5);
+  }
+  .city-marker.active {
+    background: #f97316;
+    border-color: #fff;
+    width: 18px;
+    height: 18px;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="p-4 lg:p-8 h-full flex flex-col">
+  <!-- Breadcrumb -->
+  <div
+    class="flex items-center gap-2 text-sm text-slate-500 dark:text-muted-text mb-4"
+  >
+    <a href="{% url 'dashboard' %}" class="hover:text-primary">Home</a>
+    <span class="material-symbols-outlined text-xs">chevron_right</span>
+    <span class="font-medium text-slate-900 dark:text-white"
+      >Weather Explorer</span
+    >
+  </div>
+
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-0">
+    <!-- Map Area -->
+    <div class="lg:col-span-3 flex flex-col gap-4">
+      <!-- Map Controls -->
+      <div
+        class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-4 flex flex-wrap items-center gap-4"
+      >
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-sm"
+            >layers</span
+          >
+          <span class="text-sm font-medium">Map Layers</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            class="layer-btn px-3 py-1 rounded-lg bg-primary text-white text-xs font-bold"
+            data-layer="temp"
+          >
+            Temperature
+          </button>
+          <button
+            class="layer-btn px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold"
+            data-layer="clouds"
+          >
+            Clouds
+          </button>
+          <button
+            class="layer-btn px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold"
+            data-layer="rain"
+          >
+            Precipitation
+          </button>
+          <button
+            class="layer-btn px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold"
+            data-layer="wind"
+          >
+            Wind
+          </button>
+        </div>
+        <div class="flex-1"></div>
+        <button
+          class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-500 hover:bg-primary hover:text-white transition-colors"
+          id="locate-btn"
+        >
+          <span class="material-symbols-outlined text-xs align-middle mr-1"
+            >my_location</span
+          >
+          My Location
+        </button>
+      </div>
+
+      <!-- Map Container -->
+      <div
+        class="flex-1 bg-white dark:bg-card-dark rounded-xl shadow-sm overflow-hidden relative"
+        style="min-height: 500px"
+      >
+        <div id="map"></div>
+        <!-- Legend -->
+        <div
+          class="absolute bottom-4 left-4 bg-white/95 dark:bg-card-dark/95 backdrop-blur rounded-lg p-3 z-[1000] shadow-lg"
+        >
+          <p class="text-xs font-bold mb-2">Temperature Scale</p>
+          <div class="flex items-center gap-1">
+            <span class="text-xs text-blue-500">-10°C</span>
+            <div
+              class="w-32 h-2 rounded-full"
+              style="
+                background: linear-gradient(
+                  90deg,
+                  #3b82f6,
+                  #22c55e,
+                  #eab308,
+                  #f97316,
+                  #ef4444
+                );
+              "
+            ></div>
+            <span class="text-xs text-red-500">40°C</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-180px)]">
+      <!-- Active City Card -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-primary"
+            >location_on</span
+          >
+          <h3 class="font-bold text-lg" id="active-city-name">Colombo</h3>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-muted-text">Temperature</span>
+            <span class="font-bold" id="active-temp">--°C</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-muted-text">Humidity</span>
+            <span class="font-bold" id="active-humidity">--%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-muted-text">Wind</span>
+            <span class="font-bold" id="active-wind">-- km/h</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-muted-text">Condition</span>
+            <span class="font-bold" id="active-condition">--</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-muted-text">Pressure</span>
+            <span class="font-bold" id="active-pressure">-- hPa</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cities List -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold">All Stations</h3>
+          <span class="text-xs text-muted-text" id="city-count">--</span>
+        </div>
+        <div class="space-y-2" id="cities-list">
+          <div class="flex items-center justify-center py-4">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Outlook -->
+      <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+        <h3 class="font-bold mb-3">Current Activity Check</h3>
+        <div class="space-y-2" id="activities-list">
+          <div class="flex items-center justify-center py-4">
+            <div class="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_scripts %}
+<script src="{% static 'js/explorer.js' %}"></script>
+{% endblock %}

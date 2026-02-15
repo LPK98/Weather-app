@@ -1,0 +1,329 @@
+{% load static %}
+<!doctype html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{{ page_title|default:"LankaWeather" }}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#607AFB",
+              "background-light": "#f5f6f8",
+              "background-dark": "#0f1323",
+              "card-dark": "#181d35",
+              "border-dark": "#2f396a",
+              "muted-text": "#8e99cc",
+              "severity-red": "#ef4444",
+              "severity-orange": "#f97316",
+              "severity-yellow": "#eab308",
+            },
+            fontFamily: { display: ["Inter", "sans-serif"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        height: 4px;
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #283339;
+        border-radius: 10px;
+      }
+      .nav-link {
+        transition: all 0.2s ease;
+      }
+      .nav-link:hover {
+        background: rgba(96, 122, 251, 0.1);
+      }
+      .nav-link.active {
+        background: rgba(96, 122, 251, 0.1);
+        color: #607afb;
+        font-weight: 600;
+      }
+      .loading-spinner {
+        border: 3px solid rgba(96, 122, 251, 0.2);
+        border-top: 3px solid #607afb;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- Side Navigation -->
+      <aside
+        class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col hidden lg:flex"
+        id="sidebar"
+      >
+        <div class="p-6 flex items-center gap-3">
+          <div
+            class="bg-primary size-10 rounded-lg flex items-center justify-center text-white"
+          >
+            <span class="material-symbols-outlined">tsunami</span>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">LankaWeather</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Regional Explorer
+            </p>
+          </div>
+        </div>
+        <nav class="flex-1 px-4 space-y-1">
+          <a
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg {% if page == 'dashboard' %}active{% else %}text-slate-600 dark:text-slate-400{% endif %}"
+            href="{% url 'dashboard' %}"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+          </a>
+          <a
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg {% if page == 'explorer' %}active{% else %}text-slate-600 dark:text-slate-400{% endif %}"
+            href="{% url 'explorer' %}"
+          >
+            <span class="material-symbols-outlined">map</span>
+            <span>Map Explorer</span>
+          </a>
+          <a
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg {% if page == 'history' %}active{% else %}text-slate-600 dark:text-slate-400{% endif %}"
+            href="{% url 'history' %}"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span>Historical Data</span>
+          </a>
+          <a
+            class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg {% if page == 'alerts' %}active{% else %}text-slate-600 dark:text-slate-400{% endif %}"
+            href="{% url 'alerts' %}"
+          >
+            <span class="material-symbols-outlined">warning</span>
+            <span>Alerts</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div
+            class="flex items-center gap-3 p-2 rounded-lg bg-slate-100 dark:bg-slate-800/50"
+          >
+            <div
+              class="size-8 rounded-full bg-primary/20 flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-primary text-sm"
+                >person</span
+              >
+            </div>
+            <div class="flex-1 overflow-hidden">
+              <p class="text-sm font-medium truncate">Navin Perera</p>
+              <p class="text-xs text-slate-500 truncate">Premium Member</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 text-sm"
+              >settings</span
+            >
+          </div>
+        </div>
+      </aside>
+
+      <!-- Mobile sidebar toggle -->
+      <button
+        class="lg:hidden fixed top-4 left-4 z-50 bg-primary text-white p-2 rounded-lg shadow-lg"
+        id="mobile-menu-btn"
+        onclick="
+          document.getElementById('sidebar').classList.toggle('hidden');
+          document.getElementById('sidebar').classList.toggle('fixed');
+          document.getElementById('sidebar').classList.toggle('z-40');
+          document.getElementById('sidebar').classList.toggle('h-full');
+        "
+      >
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navigation Bar -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-4 lg:px-8 flex items-center justify-between z-10"
+        >
+          <div class="flex items-center gap-4 flex-1 max-w-xl ml-12 lg:ml-0">
+            <div class="relative w-full">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >search</span
+              >
+              <input
+                class="w-full bg-slate-100 dark:bg-card-dark border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-500"
+                placeholder="Search Sri Lankan cities (e.g., Colombo, Kandy)"
+                type="text"
+                id="global-search"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-2 lg:gap-4 ml-4 lg:ml-8">
+            <div
+              class="flex items-center bg-slate-100 dark:bg-card-dark rounded-lg p-1"
+              id="unit-toggle"
+            >
+              <button
+                class="unit-btn px-3 py-1 rounded-md bg-white dark:bg-primary text-slate-900 dark:text-white text-xs font-bold shadow-sm"
+                data-unit="C"
+              >
+                °C
+              </button>
+              <button
+                class="unit-btn px-3 py-1 rounded-md text-slate-500 text-xs font-medium"
+                data-unit="F"
+              >
+                °F
+              </button>
+            </div>
+            <a
+              href="{% url 'alerts' %}"
+              class="p-2 text-slate-500 hover:text-primary transition-colors relative"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute -top-0.5 -right-0.5 bg-severity-red text-white text-[9px] font-bold rounded-full size-4 flex items-center justify-center"
+                id="alert-badge"
+                style="display: none"
+                >0</span
+              >
+            </a>
+            <button
+              class="hidden md:flex items-center gap-2 bg-primary px-4 py-2 rounded-lg text-white text-sm font-bold hover:bg-primary/90 transition-colors"
+              id="export-btn"
+            >
+              <span class="material-symbols-outlined text-sm"
+                >cloud_download</span
+              >
+              Export Report
+            </button>
+          </div>
+        </header>
+
+        <!-- Page Content -->
+        <div
+          class="flex-1 overflow-y-auto custom-scrollbar bg-background-light dark:bg-background-dark"
+        >
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+    </div>
+
+    <!-- Global scripts -->
+    <script>
+      // Global state
+      window.LW = {
+        currentCity: "Colombo",
+        unit: "C",
+        apiBase: "",
+      };
+
+      // Temperature conversion
+      function toFahrenheit(c) {
+        return Math.round((c * 9) / 5 + 32);
+      }
+      function formatTemp(celsius) {
+        if (window.LW.unit === "F") return toFahrenheit(celsius) + "°";
+        return Math.round(celsius) + "°";
+      }
+      function formatTempFull(celsius) {
+        if (window.LW.unit === "F") return toFahrenheit(celsius) + "°F";
+        return Math.round(celsius) + "°C";
+      }
+
+      // Unit toggle
+      document.querySelectorAll(".unit-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          window.LW.unit = btn.dataset.unit;
+          document.querySelectorAll(".unit-btn").forEach((b) => {
+            b.classList.remove(
+              "bg-white",
+              "dark:bg-primary",
+              "text-slate-900",
+              "dark:text-white",
+              "font-bold",
+              "shadow-sm",
+            );
+            b.classList.add("text-slate-500", "font-medium");
+          });
+          btn.classList.remove("text-slate-500", "font-medium");
+          btn.classList.add(
+            "bg-white",
+            "dark:bg-primary",
+            "text-slate-900",
+            "dark:text-white",
+            "font-bold",
+            "shadow-sm",
+          );
+          // Dispatch event for pages to react
+          document.dispatchEvent(
+            new CustomEvent("unitChanged", {
+              detail: { unit: window.LW.unit },
+            }),
+          );
+        });
+      });
+
+      // Global search
+      document
+        .getElementById("global-search")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && e.target.value.trim()) {
+            window.LW.currentCity = e.target.value.trim();
+            document.dispatchEvent(
+              new CustomEvent("cityChanged", {
+                detail: { city: window.LW.currentCity },
+              }),
+            );
+          }
+        });
+
+      // Fetch alert badge count
+      async function updateAlertBadge() {
+        try {
+          const res = await fetch("/api/alerts/stats/");
+          const data = await res.json();
+          const badge = document.getElementById("alert-badge");
+          if (data.total > 0) {
+            badge.textContent = data.total;
+            badge.style.display = "flex";
+          }
+        } catch (e) {}
+      }
+      updateAlertBadge();
+    </script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

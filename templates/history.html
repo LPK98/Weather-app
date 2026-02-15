@@ -1,0 +1,325 @@
+{% extends "base.html" %} {% load static %} {% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %} {% block content %}
+<div class="p-4 lg:p-8">
+  <!-- Breadcrumb -->
+  <div
+    class="flex items-center gap-2 text-sm text-slate-500 dark:text-muted-text mb-6"
+  >
+    <a href="{% url 'dashboard' %}" class="hover:text-primary">Home</a>
+    <span class="material-symbols-outlined text-xs">chevron_right</span>
+    <span class="font-medium text-slate-900 dark:text-white"
+      >Historical Weather Analytics</span
+    >
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-4 mb-6">
+    <div class="flex flex-wrap gap-4 items-center">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-slate-400 text-sm"
+          >location_on</span
+        >
+        <select
+          id="filter-city"
+          class="bg-slate-100 dark:bg-background-dark border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
+        >
+          <option value="Colombo">Colombo</option>
+          <option value="Kandy">Kandy</option>
+          <option value="Galle">Galle</option>
+          <option value="Jaffna">Jaffna</option>
+          <option value="Trincomalee">Trincomalee</option>
+          <option value="Ratnapura">Ratnapura</option>
+          <option value="Nuwara Eliya">Nuwara Eliya</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-slate-400 text-sm"
+          >date_range</span
+        >
+        <select
+          id="filter-start"
+          class="bg-slate-100 dark:bg-background-dark border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
+        >
+          <option value="2018">2018</option>
+          <option value="2019">2019</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+        </select>
+        <span class="text-slate-400">-</span>
+        <select
+          id="filter-end"
+          class="bg-slate-100 dark:bg-background-dark border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
+        >
+          <option value="2023" selected>2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-slate-400 text-sm"
+          >bar_chart</span
+        >
+        <select
+          id="filter-metric"
+          class="bg-slate-100 dark:bg-background-dark border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
+        >
+          <option value="all">Rainfall &amp; Temp</option>
+          <option value="temperature">Temperature Only</option>
+          <option value="rainfall">Rainfall Only</option>
+          <option value="humidity">Humidity</option>
+        </select>
+      </div>
+      <div class="flex-1"></div>
+      <button
+        class="text-slate-500 text-sm hover:text-primary"
+        id="reset-filters"
+      >
+        Reset All
+      </button>
+      <button
+        class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
+        id="apply-btn"
+      >
+        Apply Analysis
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+      <div class="flex items-center justify-between mb-2">
+        <p
+          class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-muted-text"
+        >
+          Avg. Temperature
+        </p>
+        <span class="material-symbols-outlined text-primary">thermostat</span>
+      </div>
+      <p class="text-2xl font-bold" id="stat-temp">--°C</p>
+      <p class="text-xs mt-1">
+        <span class="text-green-500 font-bold" id="stat-temp-trend">--</span> vs
+        previous period
+      </p>
+    </div>
+    <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+      <div class="flex items-center justify-between mb-2">
+        <p
+          class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-muted-text"
+        >
+          Total Rainfall
+        </p>
+        <span class="material-symbols-outlined text-primary">water_drop</span>
+      </div>
+      <p class="text-2xl font-bold" id="stat-rainfall">--mm</p>
+      <p class="text-xs mt-1">
+        <span class="text-red-500 font-bold" id="stat-rainfall-trend">--</span>
+        vs previous period
+      </p>
+    </div>
+    <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+      <div class="flex items-center justify-between mb-2">
+        <p
+          class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-muted-text"
+        >
+          Humidity Avg.
+        </p>
+        <span class="material-symbols-outlined text-primary">humidity_mid</span>
+      </div>
+      <p class="text-2xl font-bold" id="stat-humidity">--%</p>
+      <p class="text-xs mt-1">
+        <span class="text-green-500 font-bold" id="stat-humidity-trend"
+          >--</span
+        >
+        vs previous period
+      </p>
+    </div>
+    <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-5">
+      <div class="flex items-center justify-between mb-2">
+        <p
+          class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-muted-text"
+        >
+          Extreme Events
+        </p>
+        <span class="material-symbols-outlined text-severity-red">bolt</span>
+      </div>
+      <p class="text-2xl font-bold" id="stat-events">--</p>
+      <p class="text-xs mt-1">
+        <span class="text-red-500 font-bold" id="stat-events-trend">--</span> vs
+        previous period
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- Chart -->
+    <div
+      class="lg:col-span-2 bg-white dark:bg-card-dark rounded-xl shadow-sm p-6"
+    >
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold">Rainfall vs Temperature</h2>
+        <div class="flex items-center gap-2">
+          <button
+            class="chart-type-btn px-3 py-1 rounded-md bg-primary text-white text-xs font-bold"
+            data-type="line"
+          >
+            Line
+          </button>
+          <button
+            class="chart-type-btn px-3 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold"
+            data-type="bar"
+          >
+            Bar
+          </button>
+        </div>
+      </div>
+      <div class="relative h-[400px]">
+        <canvas id="history-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Regional Distribution -->
+    <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
+      <h3 class="font-bold mb-4">Regional Distribution</h3>
+      <div class="space-y-4 mb-6">
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>Central Highlands</span>
+            <span class="text-muted-text">Cool & Humid</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+            <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>Dry Zone North</span>
+            <span class="text-muted-text">Arid</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+            <div
+              class="bg-orange-500 h-2 rounded-full"
+              style="width: 40%"
+            ></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span>Wet Zone West</span>
+            <span class="text-muted-text">Tropical Wet</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+            <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="p-3 bg-slate-50 dark:bg-background-dark rounded-lg">
+        <p class="text-xs text-muted-text">Current Hotspot</p>
+        <p class="font-bold text-sm" id="hotspot-city">Colombo</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Climate Normals Table -->
+  <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-bold">Climate Normals</h2>
+      <div class="flex items-center gap-2">
+        <button
+          class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-500"
+        >
+          Columns
+        </button>
+        <button
+          class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-500"
+        >
+          Sort By
+        </button>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-border-dark">
+            <th
+              class="text-left py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
+            >
+              Station
+            </th>
+            <th
+              class="text-right py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
+            >
+              Max Temp (°C)
+            </th>
+            <th
+              class="text-right py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
+            >
+              Min Temp (°C)
+            </th>
+            <th
+              class="text-right py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
+            >
+              Annual Rainfall (mm)
+            </th>
+            <th
+              class="text-right py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
+            >
+              Rainy Days
+            </th>
+            <th
+              class="text-right py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
+            >
+              Sunshine (hrs)
+            </th>
+          </tr>
+        </thead>
+        <tbody id="climate-tbody">
+          <tr>
+            <td colspan="6" class="text-center py-4">
+              <div class="loading-spinner mx-auto"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Export Section -->
+  <div
+    class="flex items-center justify-between bg-white dark:bg-card-dark rounded-xl shadow-sm p-6"
+  >
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary">update</span>
+      <p class="text-sm text-muted-text">
+        Data Updated:
+        <strong class="text-slate-900 dark:text-white">Recently</strong>
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button
+        class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+        id="export-csv"
+      >
+        <span class="material-symbols-outlined text-sm align-middle mr-1"
+          >download</span
+        >
+        Export as CSV
+      </button>
+      <button
+        class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
+        id="export-pdf"
+      >
+        <span class="material-symbols-outlined text-sm align-middle mr-1"
+          >picture_as_pdf</span
+        >
+        Generate PDF Report
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_scripts %}
+<script src="{% static 'js/history.js' %}"></script>
+{% endblock %}
