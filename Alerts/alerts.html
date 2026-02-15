@@ -1,0 +1,687 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>WeatherSafe Sri Lanka | Alerts &amp; Safety</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#1f44f9",
+              "background-light": "#f5f6f8",
+              "background-dark": "#0f1323",
+              "severity-red": "#ef4444",
+              "severity-orange": "#f97316",
+              "severity-yellow": "#eab308",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen"
+  >
+    <!-- Top Navigation Bar -->
+    <header
+      class="sticky top-0 z-50 border-b border-solid border-slate-200 dark:border-[#21284a] bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-4 md:px-10 py-3"
+    >
+      <div
+        class="max-w-[1440px] mx-auto flex items-center justify-between gap-8"
+      >
+        <div class="flex items-center gap-8">
+          <div class="flex items-center gap-3 text-primary">
+            <div
+              class="size-8 flex items-center justify-center bg-primary text-white rounded-lg"
+            >
+              <span class="material-symbols-outlined">tsunami</span>
+            </div>
+            <h2
+              class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight"
+            >
+              WeatherSafe <span class="text-primary">SL</span>
+            </h2>
+          </div>
+          <div class="hidden lg:flex items-center gap-6">
+            <a
+              class="text-slate-600 dark:text-[#8e99cc] hover:text-primary dark:hover:text-white text-sm font-medium transition-colors"
+              href="#"
+              >Dashboard</a
+            >
+            <a
+              class="text-primary dark:text-white text-sm font-bold border-b-2 border-primary pb-1"
+              href="#"
+              >Alerts</a
+            >
+            <a
+              class="text-slate-600 dark:text-[#8e99cc] hover:text-primary dark:hover:text-white text-sm font-medium transition-colors"
+              href="#"
+              >Forecasts</a
+            >
+            <a
+              class="text-slate-600 dark:text-[#8e99cc] hover:text-primary dark:hover:text-white text-sm font-medium transition-colors"
+              href="#"
+              >Resources</a
+            >
+          </div>
+        </div>
+        <div class="flex items-center gap-4 flex-1 max-w-md">
+          <div class="relative w-full">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#8e99cc] text-xl"
+              >search</span
+            >
+            <input
+              class="w-full bg-slate-100 dark:bg-[#21284a] border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#8e99cc]"
+              placeholder="Search district (e.g. Colombo, Kandy)..."
+            />
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            class="p-2 rounded-lg bg-slate-100 dark:bg-[#21284a] text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2f396a] transition-colors"
+          >
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          <button
+            class="p-2 rounded-lg bg-slate-100 dark:bg-[#21284a] text-slate-600 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2f396a] transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+          </button>
+          <div
+            class="size-10 rounded-full bg-cover bg-center border-2 border-primary/20"
+            data-alt="User profile picture"
+            style="
+              background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCycSIOdKONwT7_Va12xd2PNwn_qU-KHkVmLjC2g591Gjf8MzbMIfIUvgPGbeqHsLPWL1z1sYZ8G3VAgsj6AD-X3VimN1UV9HiLvTpz7oCS4CFUY6rnNWZqQ7rZ8XRNWEmnf3Q2MkbtQ5fCKShdng-xwi2tjzQjFcVRQ2tp4DPiyttcF6KVsf-DlEjx8gAEJtFXpGrzSCAW7EWDzv-7DIWj35MoDmJPfM4UUYk8LzyQSgBXHh3SDlp5jxY3_8JkqgbIarr19B0ZZ_k&quot;);
+            "
+          ></div>
+        </div>
+      </div>
+    </header>
+    <main class="max-w-[1440px] mx-auto px-4 md:px-10 py-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar Navigation & Settings -->
+        <aside class="w-full lg:w-80 shrink-0">
+          <div class="sticky top-24 flex flex-col gap-6">
+            <!-- Alert Stats Component -->
+            <div
+              class="bg-white dark:bg-[#181d35] rounded-xl p-6 border border-slate-200 dark:border-[#2f396a] shadow-sm"
+            >
+              <h3
+                class="text-slate-900 dark:text-white font-bold mb-4 flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >analytics</span
+                >
+                Active Alerts Today
+              </h3>
+              <div class="grid grid-cols-3 gap-2">
+                <div
+                  class="bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 p-3 rounded-lg text-center"
+                >
+                  <p
+                    class="text-xs font-bold text-red-600 dark:text-red-400 uppercase"
+                  >
+                    Red
+                  </p>
+                  <p class="text-2xl font-black text-red-700 dark:text-red-500">
+                    2
+                  </p>
+                </div>
+                <div
+                  class="bg-orange-50 dark:bg-orange-500/10 border border-orange-100 dark:border-orange-500/20 p-3 rounded-lg text-center"
+                >
+                  <p
+                    class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase"
+                  >
+                    Org
+                  </p>
+                  <p
+                    class="text-2xl font-black text-orange-700 dark:text-orange-500"
+                  >
+                    5
+                  </p>
+                </div>
+                <div
+                  class="bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-100 dark:border-yellow-500/20 p-3 rounded-lg text-center"
+                >
+                  <p
+                    class="text-xs font-bold text-yellow-600 dark:text-yellow-400 uppercase"
+                  >
+                    Yel
+                  </p>
+                  <p
+                    class="text-2xl font-black text-yellow-700 dark:text-yellow-500"
+                  >
+                    12
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Alert Settings Component -->
+            <div
+              class="bg-white dark:bg-[#181d35] rounded-xl p-6 border border-slate-200 dark:border-[#2f396a] shadow-sm"
+            >
+              <div class="mb-6">
+                <h3
+                  class="text-slate-900 dark:text-white font-bold text-lg leading-tight"
+                >
+                  Alert Settings
+                </h3>
+                <p class="text-slate-500 dark:text-[#8e99cc] text-sm mt-1">
+                  Manage your safety notifications
+                </p>
+              </div>
+              <div class="space-y-4">
+                <div class="flex flex-col gap-2">
+                  <p
+                    class="text-xs font-bold text-slate-400 dark:text-[#8e99cc] uppercase tracking-wider"
+                  >
+                    Priority Channels
+                  </p>
+                  <div
+                    class="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#21284a] border border-slate-100 dark:border-transparent transition-all"
+                  >
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-primary"
+                        >campaign</span
+                      >
+                      <span class="text-sm font-medium">Emergency Monsoon</span>
+                    </div>
+                    <div
+                      class="w-10 h-6 bg-primary rounded-full relative p-1 cursor-pointer"
+                    >
+                      <div class="bg-white w-4 h-4 rounded-full ml-auto"></div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-[#21284a] transition-all"
+                  >
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined">sms</span>
+                      <span class="text-sm font-medium">SMS Alerts</span>
+                    </div>
+                    <div
+                      class="w-10 h-6 bg-slate-300 dark:bg-slate-700 rounded-full relative p-1 cursor-pointer"
+                    >
+                      <div class="bg-white w-4 h-4 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-[#21284a] transition-all"
+                  >
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined">mail</span>
+                      <span class="text-sm font-medium">Email Summary</span>
+                    </div>
+                    <div
+                      class="w-10 h-6 bg-primary rounded-full relative p-1 cursor-pointer"
+                    >
+                      <div class="bg-white w-4 h-4 rounded-full ml-auto"></div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="flex flex-col gap-2 pt-4 border-t border-slate-100 dark:border-[#2f396a]"
+                >
+                  <p
+                    class="text-xs font-bold text-slate-400 dark:text-[#8e99cc] uppercase tracking-wider"
+                  >
+                    Monitoring Regions
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    <span
+                      class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20 flex items-center gap-1"
+                      >Ratnapura
+                      <span class="material-symbols-outlined text-[14px]"
+                        >close</span
+                      ></span
+                    >
+                    <span
+                      class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20 flex items-center gap-1"
+                      >Colombo
+                      <span class="material-symbols-outlined text-[14px]"
+                        >close</span
+                      ></span
+                    >
+                    <button
+                      class="px-3 py-1 bg-slate-100 dark:bg-[#21284a] text-xs font-bold rounded-full border border-dashed border-slate-300 dark:border-slate-600 flex items-center gap-1 hover:border-primary hover:text-primary transition-all"
+                    >
+                      + Add District
+                    </button>
+                  </div>
+                </div>
+                <button
+                  class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-primary/20 mt-4"
+                >
+                  Save Preferences
+                </button>
+              </div>
+            </div>
+            <!-- Safety Guide Quick Link -->
+            <div
+              class="bg-gradient-to-br from-primary to-blue-700 rounded-xl p-6 text-white shadow-xl"
+            >
+              <span class="material-symbols-outlined text-4xl mb-3"
+                >shield</span
+              >
+              <h4 class="font-bold text-lg mb-2">Safety Protocols</h4>
+              <p class="text-blue-100 text-sm mb-4">
+                Prepare your emergency kit and learn evacuation routes for
+                flood-prone areas.
+              </p>
+              <button
+                class="w-full bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-bold py-2 rounded-lg transition-all text-sm"
+              >
+                Open Safety Guide
+              </button>
+            </div>
+          </div>
+        </aside>
+        <!-- Main Content Area -->
+        <section class="flex-1">
+          <!-- Page Heading -->
+          <div
+            class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8"
+          >
+            <div>
+              <h1
+                class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight"
+              >
+                Live Weather Alerts
+              </h1>
+              <p class="text-slate-500 dark:text-[#8e99cc] text-lg mt-2">
+                Real-time monitoring of active warnings across Sri Lanka.
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-500 rounded-full text-xs font-bold border border-green-500/20"
+              >
+                <span class="relative flex h-2 w-2">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+                  ></span>
+                  <span
+                    class="relative inline-flex rounded-full h-2 w-2 bg-green-500"
+                  ></span>
+                </span>
+                SYSTEM LIVE
+              </div>
+              <span
+                class="text-slate-400 dark:text-[#8e99cc] text-sm font-medium"
+                >Updated 2 mins ago</span
+              >
+            </div>
+          </div>
+          <!-- Alert Feed -->
+          <div class="flex flex-col gap-6">
+            <!-- CRITICAL ALERT (RED) -->
+            <div
+              class="group bg-white dark:bg-[#181d35] rounded-xl overflow-hidden border-2 border-red-500 shadow-2xl shadow-red-500/10 transition-transform hover:scale-[1.01]"
+            >
+              <div class="flex flex-col @xl:flex-row">
+                <div
+                  class="w-full @xl:w-1/3 h-48 @xl:h-auto relative overflow-hidden"
+                >
+                  <div
+                    class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    data-alt="Satellite map of Ratnapura showing heavy storm clouds"
+                    data-location="Ratnapura"
+                    style="
+                      background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDD0ljpHiXzl_jlrnd4IVCtpAo5mzmkJHabfxdShMGF41s0-XVT720EQyzSif3SSmEa5TYAWpHx6S2cxKgsg4XSxLEBY2Lx2hFv5GuBcn3i8UCzcDRhvG10QoMW33fbIx8cz2x84gIFnwJTjB5zbxhQgPOQplvX4EP-O3f_fkzyRz3E051GilqJxTNpBfj6P_cp98ItQrGS2rz7VAKaebitwh1pNMNCfQ15qKljcQHR_bAPBDs9qYE56caCyRPZ18r2DWeCV9QCJ7M&quot;);
+                    "
+                  ></div>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-red-900/80 to-transparent"
+                  ></div>
+                  <div class="absolute bottom-4 left-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-white"
+                      >location_on</span
+                    >
+                    <span class="text-white font-bold">Ratnapura District</span>
+                  </div>
+                </div>
+                <div class="flex-1 p-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <span
+                      class="px-3 py-1 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-xs"
+                        >warning</span
+                      >
+                      CRITICAL SEVERITY
+                    </span>
+                    <span class="text-slate-400 text-xs font-medium"
+                      >Valid until: 12:00 PM Tomorrow</span
+                    >
+                  </div>
+                  <h3
+                    class="text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight"
+                  >
+                    RED ALERT: Heavy Rain &amp; Landslide Warning
+                  </h3>
+                  <p class="text-slate-600 dark:text-[#8e99cc] mb-4">
+                    Extreme precipitation (&gt;150mm) expected within the next
+                    12 hours. Risk of flash floods in Kalu Ganga basin and
+                    landslides in Nivithigala and Pelmadulla areas.
+                  </p>
+                  <div
+                    class="bg-red-50 dark:bg-red-950/30 rounded-lg p-4 mb-6 border border-red-100 dark:border-red-900/30"
+                  >
+                    <p
+                      class="text-red-700 dark:text-red-400 font-bold text-sm mb-2 flex items-center gap-2"
+                    >
+                      <span class="material-symbols-outlined text-sm"
+                        >health_and_safety</span
+                      >
+                      Safety Instructions:
+                    </p>
+                    <ul
+                      class="grid md:grid-cols-2 gap-2 text-red-600 dark:text-red-300 text-sm"
+                    >
+                      <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-xs mt-1"
+                          >check_circle</span
+                        >
+                        Evacuate if in designated landslide zones.
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-xs mt-1"
+                          >check_circle</span
+                        >
+                        Avoid all travel through mountain passes.
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-xs mt-1"
+                          >check_circle</span
+                        >
+                        Keep emergency kits and torchlights ready.
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-xs mt-1"
+                          >check_circle</span
+                        >
+                        Monitor local DMC radio announcements.
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex -space-x-2">
+                      <div
+                        class="size-8 rounded-full border-2 border-white dark:border-[#181d35] bg-primary flex items-center justify-center text-[10px] font-bold text-white"
+                      >
+                        DMC
+                      </div>
+                      <div
+                        class="size-8 rounded-full border-2 border-white dark:border-[#181d35] bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white"
+                      >
+                        MET
+                      </div>
+                      <div
+                        class="size-8 rounded-full border-2 border-white dark:border-[#181d35] bg-red-600 flex items-center justify-center text-[10px] font-bold text-white"
+                      >
+                        NBRO
+                      </div>
+                    </div>
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 border border-slate-200 dark:border-[#2f396a] rounded-lg hover:bg-slate-50 dark:hover:bg-[#21284a] transition-colors"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >share</span
+                        >
+                      </button>
+                      <button
+                        class="bg-primary hover:bg-primary/90 text-white font-bold px-6 py-2 rounded-lg transition-all text-sm flex items-center gap-2"
+                      >
+                        Full Advisory
+                        <span class="material-symbols-outlined text-sm"
+                          >arrow_forward</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- WARNING ALERT (ORANGE) -->
+            <div
+              class="bg-white dark:bg-[#181d35] rounded-xl overflow-hidden border border-orange-500/50 shadow-lg shadow-orange-500/5"
+            >
+              <div class="flex flex-col @xl:flex-row">
+                <div
+                  class="w-full @xl:w-1/3 h-48 @xl:auto relative overflow-hidden"
+                >
+                  <div
+                    class="absolute inset-0 bg-cover bg-center"
+                    data-alt="Heat map showing high temperature index in Vavuniya"
+                    data-location="Vavuniya"
+                    style="
+                      background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuA31inmnCu4EtvhnQdzKTCVosk8VdtroojgRZGXNGSHiGUBoc7fTDpJlKTOAL9XOke3Q6xmq-qZTHkr0oGARk-Jo2T-r3WuE1WuNNtRQVAk69OI_RVN6dRhzCUp7X5dFtHyp6YI5hDuOAOnBXCkAdtVZZAbUTZbTIVUYpTIjreJFIHX6htug4NRoGnV70SV1Bl-VfM9nGT7ttb-SprVHwknw3ycaBhP0-Sya77ukjad-GjbPYSZEVBF2ZCf_-Qv9kuns5DA6D-msS4&quot;);
+                    "
+                  ></div>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-orange-900/60 to-transparent"
+                  ></div>
+                  <div class="absolute bottom-4 left-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-white"
+                      >location_on</span
+                    >
+                    <span class="text-white font-bold">Vavuniya District</span>
+                  </div>
+                </div>
+                <div class="flex-1 p-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <span
+                      class="px-3 py-1 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-xs"
+                        >thermostat</span
+                      >
+                      HIGH SEVERITY
+                    </span>
+                    <span class="text-slate-400 text-xs font-medium"
+                      >Today 11:00 AM - 04:00 PM</span
+                    >
+                  </div>
+                  <h3
+                    class="text-xl font-bold text-slate-900 dark:text-white mb-2 leading-tight"
+                  >
+                    ORANGE WARNING: High Heat Index
+                  </h3>
+                  <p class="text-slate-600 dark:text-[#8e99cc] mb-4">
+                    Heat index is expected to rise above 40°C in several parts
+                    of the Vavuniya and Anuradhapura districts. Direct exposure
+                    may lead to exhaustion.
+                  </p>
+                  <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div
+                      class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#21284a] rounded-lg"
+                    >
+                      <span class="material-symbols-outlined text-orange-500"
+                        >water_drop</span
+                      >
+                      <div>
+                        <p class="text-xs font-bold uppercase text-slate-400">
+                          Recommendation
+                        </p>
+                        <p class="text-sm font-semibold">Stay Hydrated</p>
+                      </div>
+                    </div>
+                    <div
+                      class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#21284a] rounded-lg"
+                    >
+                      <span class="material-symbols-outlined text-orange-500"
+                        >home</span
+                      >
+                      <div>
+                        <p class="text-xs font-bold uppercase text-slate-400">
+                          Recommendation
+                        </p>
+                        <p class="text-sm font-semibold">Avoid Outdoors</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      class="p-2 border border-slate-200 dark:border-[#2f396a] rounded-lg hover:bg-slate-50 dark:hover:bg-[#21284a] transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >share</span
+                      >
+                    </button>
+                    <button
+                      class="bg-slate-200 dark:bg-[#21284a] text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-[#2f396a] font-bold px-6 py-2 rounded-lg transition-all text-sm"
+                    >
+                      Read Advisory
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- ADVISORY ALERT (YELLOW) -->
+            <div
+              class="bg-white dark:bg-[#181d35] rounded-xl overflow-hidden border border-yellow-500/30 shadow-md"
+            >
+              <div class="flex flex-col @xl:flex-row">
+                <div
+                  class="w-full @xl:w-1/3 h-48 @xl:auto relative overflow-hidden"
+                >
+                  <div
+                    class="absolute inset-0 bg-cover bg-center"
+                    data-alt="Coastal view of Galle with rough seas"
+                    data-location="Galle"
+                    style="
+                      background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDZPBj86N70VEQWGvnE4ewvSUkE9XdOyQBPKEU8hQWlAdiT5oOgL2PEIKZP_u8bjjy1lkLQdgiwKrnc7bDp4H84am_e9G7xIIObpff6ehe3OjH1agaALeVE3v7bDUWYSp-Mcmrv5UUid98NPT_w75nh4xUnqRkjcTcad69L1uDQwROsw1x6kXfbMyJRU1zuiMof7fUodOfZSKAlGhZA2ApdD_dy8-b3TzVHupccKf6JuiM2BW0mpXUncPZt82thnGKL7QLiYae9Cfc&quot;);
+                    "
+                  ></div>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-yellow-900/40 to-transparent"
+                  ></div>
+                  <div class="absolute bottom-4 left-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-white"
+                      >location_on</span
+                    >
+                    <span class="text-white font-bold">Southern Coast</span>
+                  </div>
+                </div>
+                <div class="flex-1 p-6">
+                  <div class="flex items-center justify-between mb-3">
+                    <span
+                      class="px-3 py-1 bg-yellow-500 text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-full flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-xs"
+                        >info</span
+                      >
+                      ADVISORY
+                    </span>
+                    <span class="text-slate-400 text-xs font-medium"
+                      >Active for 24 hours</span
+                    >
+                  </div>
+                  <h3
+                    class="text-xl font-bold text-slate-900 dark:text-white mb-2 leading-tight"
+                  >
+                    YELLOW ADVISORY: Rough Sea Conditions
+                  </h3>
+                  <p class="text-slate-600 dark:text-[#8e99cc] mb-4">
+                    The naval and fishing communities are advised to be vigilant
+                    as the sea areas from Galle to Matara can be rough at times
+                    with gusty winds.
+                  </p>
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      class="p-2 border border-slate-200 dark:border-[#2f396a] rounded-lg hover:bg-slate-50 dark:hover:bg-[#21284a] transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >share</span
+                      >
+                    </button>
+                    <button
+                      class="bg-slate-200 dark:bg-[#21284a] text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-[#2f396a] font-bold px-6 py-2 rounded-lg transition-all text-sm"
+                    >
+                      Read Advisory
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Load More / Pagination -->
+          <div class="mt-8 flex justify-center">
+            <button
+              class="flex items-center gap-2 text-slate-500 dark:text-[#8e99cc] font-bold hover:text-primary transition-colors py-4"
+            >
+              <span class="material-symbols-outlined">expand_more</span>
+              Show older alerts
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+    <!-- Footer Meta -->
+    <footer
+      class="max-w-[1440px] mx-auto px-10 py-12 border-t border-slate-200 dark:border-[#21284a] mt-12"
+    >
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div
+          class="flex items-center gap-4 text-slate-400 dark:text-[#8e99cc] text-sm"
+        >
+          <span>© 2024 WeatherSafe Sri Lanka</span>
+          <span class="size-1 bg-slate-400 rounded-full"></span>
+          <a class="hover:text-primary underline underline-offset-4" href="#"
+            >Privacy Policy</a
+          >
+          <span class="size-1 bg-slate-400 rounded-full"></span>
+          <a class="hover:text-primary underline underline-offset-4" href="#"
+            >Terms of Service</a
+          >
+        </div>
+        <div class="flex gap-4">
+          <p class="text-sm font-medium text-slate-500 dark:text-[#8e99cc]">
+            Emergency Hotline: <span class="text-primary font-black">117</span>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

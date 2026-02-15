@@ -1,0 +1,640 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Weather Explorer Dashboard - Sri Lanka</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#607AFB",
+              "background-light": "#f5f6f8",
+              "background-dark": "#0f1323",
+            },
+            fontFamily: { display: "Plus Jakarta Sans" },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        height: 4px;
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #283339;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen"
+  >
+    <!-- Main Layout Container -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- Side Navigation -->
+      <aside
+        class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col hidden lg:flex"
+      >
+        <div class="p-6 flex items-center gap-3">
+          <div
+            class="bg-primary size-10 rounded-lg flex items-center justify-center text-white"
+          >
+            <span class="material-symbols-outlined">tsunami</span>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">LankaWeather</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Regional Explorer
+            </p>
+          </div>
+        </div>
+        <nav class="flex-1 px-4 space-y-1">
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            href="C:\Users\lalpu\OneDrive\Desktop\Weather App\Wheather_Explorer\exp.html"
+          >
+            <span class="material-symbols-outlined">map</span>
+            <span>Map Explorer</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            href="C:\Users\lalpu\OneDrive\Desktop\Weather App\History\history.html"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span>Historical Data</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            href="C:\Users\lalpu\OneDrive\Desktop\Weather App\Alerts\alerts.html"
+          >
+            <span class="material-symbols-outlined">warning</span>
+            <span>Alerts</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div
+            class="flex items-center gap-3 p-2 rounded-lg bg-slate-100 dark:bg-slate-800/50"
+          >
+            <div
+              class="size-8 rounded-full bg-cover"
+              data-alt="User profile picture thumbnail"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAzjTmOb4ANT4KW1nSLuIisUSA56UYuunG2kfVbbxh-FXCrURmsIew6wJB2M4VPZ2u7YXffa0rJWwm0maKlP29mmh7ywGPygw8igWflbtU5yLmgL2gfVavwtbEsU1Z-f3u5D5yw3_IiOBIOTbSwIWJQJK6c79HqkK1x2H8eSKyjeSBCxMRJNI5ltuvzWh8YsrvUSg5Fo7X-nDh0CzUosLG91shy92a-cxSyH24uYTHypcldqoFho-t_a9rRYxqdGPLUIEyIUP5GZVk&quot;);
+              "
+            ></div>
+            <div class="flex-1 overflow-hidden">
+              <p class="text-sm font-medium truncate">Navin Perera</p>
+              <p class="text-xs text-slate-500 truncate">Premium Member</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-400 text-sm"
+              >settings</span
+            >
+          </div>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navigation Bar -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-8 flex items-center justify-between z-10"
+        >
+          <div class="flex items-center gap-4 flex-1 max-w-xl">
+            <div class="relative w-full">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >search</span
+              >
+              <input
+                class="w-full bg-slate-100 dark:bg-[#1c2327] border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-500"
+                placeholder="Search Sri Lankan cities (e.g., Colombo, Kandy, Nuwara Eliya)"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 ml-8">
+            <div
+              class="flex items-center bg-slate-100 dark:bg-[#1c2327] rounded-lg p-1"
+            >
+              <button
+                class="px-3 py-1 rounded-md bg-white dark:bg-primary text-slate-900 dark:text-white text-xs font-bold shadow-sm"
+              >
+                °C
+              </button>
+              <button
+                class="px-3 py-1 rounded-md text-slate-500 text-xs font-medium"
+              >
+                °F
+              </button>
+            </div>
+            <button
+              class="p-2 text-slate-500 hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+            <button
+              class="hidden md:flex items-center gap-2 bg-primary px-4 py-2 rounded-lg text-white text-sm font-bold"
+            >
+              <span class="material-symbols-outlined text-sm"
+                >cloud_download</span
+              >
+              Export Report
+            </button>
+          </div>
+        </header>
+        <!-- Dashboard Content Scrollable Area -->
+        <div
+          class="flex-1 overflow-y-auto p-8 custom-scrollbar bg-background-light dark:bg-background-dark"
+        >
+          <div class="grid grid-cols-12 gap-6">
+            <!-- Left Column: Current Weather Hero -->
+            <div class="col-span-12 xl:col-span-4 space-y-6">
+              <div
+                class="relative group overflow-hidden rounded-xl h-[480px] flex flex-col shadow-xl"
+              >
+                <div
+                  class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                  data-alt="Scenic view of Colombo skyline at dusk"
+                  style="
+                    background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuABMcdDQYJCIqcJrHNuobtBM5M1hTGEm14J7wUnCDiX18axZsNH-HrFpZGrfT6mXeNawINuBLyXFpCabJ1NNKxkYoP5-oAoDyvEew_Y5y0WLlsAct8Zviy71Fg14Pv9l8-tbMKeNYh9TTE3oh1dd9_TWgiSjWUE1qmLZFknnB9k1Pfz21_Sh1avqa8U8eW70fKKXgMbKLPKunnX8UcnxwuSARLdU4stVuYElUwLnZAGQE5JvuAErMYm9S-ASKXTs_TkRqw07c6ruzc&quot;);
+                  "
+                ></div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"
+                ></div>
+                <div
+                  class="relative flex-1 p-8 flex flex-col justify-between text-white"
+                >
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h2 class="text-3xl font-bold">Colombo</h2>
+                      <p class="text-white/70 text-sm font-medium">
+                        Western Province, Sri Lanka
+                      </p>
+                    </div>
+                    <div
+                      class="bg-white/20 backdrop-blur-md rounded-lg px-3 py-1 text-xs font-bold uppercase tracking-wider"
+                    >
+                      Live
+                    </div>
+                  </div>
+                  <div class="space-y-4">
+                    <div class="flex items-end gap-2">
+                      <span class="text-8xl font-bold tracking-tighter"
+                        >29°</span
+                      >
+                      <div class="mb-4">
+                        <span
+                          class="material-symbols-outlined text-4xl text-primary"
+                          >cloudy_filled</span
+                        >
+                        <p class="text-xl font-medium">Cloudy</p>
+                      </div>
+                    </div>
+                    <div
+                      class="grid grid-cols-2 gap-4 pt-6 border-t border-white/20"
+                    >
+                      <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-white/60"
+                          >humidity_mid</span
+                        >
+                        <div>
+                          <p
+                            class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                          >
+                            Humidity
+                          </p>
+                          <p class="font-bold">82%</p>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-white/60"
+                          >air</span
+                        >
+                        <div>
+                          <p
+                            class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                          >
+                            Wind
+                          </p>
+                          <p class="font-bold">12 km/h SW</p>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-white/60"
+                          >visibility</span
+                        >
+                        <div>
+                          <p
+                            class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                          >
+                            Visibility
+                          </p>
+                          <p class="font-bold">10 km</p>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-white/60"
+                          >wb_sunny</span
+                        >
+                        <div>
+                          <p
+                            class="text-white/50 text-xs uppercase font-bold tracking-tighter"
+                          >
+                            UV Index
+                          </p>
+                          <p class="font-bold">4 Moderate</p>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="text-white/80 text-sm italic">
+                      Light tropical showers expected by 4:00 PM today.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <!-- Mini Map of Sri Lanka -->
+              <div class="bg-white dark:bg-[#1c2327] p-4 rounded-xl shadow-sm">
+                <h3
+                  class="font-bold text-sm mb-4 uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                >
+                  Regional Explorer Map
+                </h3>
+                <div
+                  class="bg-slate-200 dark:bg-background-dark rounded-lg h-48 relative overflow-hidden flex items-center justify-center"
+                >
+                  <div
+                    class="absolute inset-0 bg-cover bg-no-repeat bg-center opacity-50 dark:opacity-20"
+                    data-alt="Simplified map of Sri Lanka with weather markers"
+                    data-location="Sri Lanka"
+                    style="
+                      background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuCIU8qiVa0b-P17LdxMOWXzev1-FdWW_5MCjBK2roa08M-7Qt4qZdgyYt2NK_icMgDABMpw7Cy6eFqNRRwOEFmJf4fd4x1OKyif5rt6fz9kKpIKtD3YJtTYK0JGnqsQt5CwupAGYUZY9Cw0XMoRLdbzT2JZpJ7n2FlBC3WVCaEbVduMGhiIHe11rIhTAqKyFaIuYnLWP-ZI0UUQz9tj4U_AJT71NdbobVWgZFTAyxmvvCOrxM6A92HMxEu22aJpWdHhO8Z6VmZN3Xs&quot;);
+                    "
+                  ></div>
+                  <!-- Mock Pins -->
+                  <div
+                    class="absolute top-1/4 left-1/2 -translate-x-1/2 text-primary"
+                  >
+                    <span class="material-symbols-outlined text-xl"
+                      >location_on</span
+                    >
+                  </div>
+                  <div class="absolute bottom-1/4 left-1/3 text-yellow-500">
+                    <span class="material-symbols-outlined text-xl"
+                      >location_on</span
+                    >
+                  </div>
+                  <div class="absolute top-1/2 right-1/4 text-primary">
+                    <span class="material-symbols-outlined text-xl"
+                      >location_on</span
+                    >
+                  </div>
+                  <p
+                    class="relative z-10 text-xs font-bold bg-white/80 dark:bg-black/40 px-2 py-1 rounded"
+                  >
+                    Tap to explore district weather
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Center Column: Forecasts -->
+            <div class="col-span-12 xl:col-span-5 space-y-6">
+              <!-- Hourly Forecast -->
+              <div
+                class="bg-white dark:bg-[#1c2327] rounded-xl shadow-sm p-6 overflow-hidden"
+              >
+                <div class="flex justify-between items-center mb-6">
+                  <h2 class="text-lg font-bold">Hourly Forecast</h2>
+                  <button class="text-primary text-sm font-bold">
+                    Next 24h
+                  </button>
+                </div>
+                <div class="flex gap-6 overflow-x-auto pb-4 custom-scrollbar">
+                  <!-- Hour Column -->
+                  <div class="flex flex-col items-center gap-3 min-w-[60px]">
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400"
+                    >
+                      Now
+                    </p>
+                    <span class="material-symbols-outlined text-primary"
+                      >cloud</span
+                    >
+                    <p class="text-lg font-bold">29°</p>
+                  </div>
+                  <div class="flex flex-col items-center gap-3 min-w-[60px]">
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400"
+                    >
+                      2 PM
+                    </p>
+                    <span class="material-symbols-outlined text-primary"
+                      >rainy</span
+                    >
+                    <p class="text-lg font-bold">27°</p>
+                  </div>
+                  <div
+                    class="flex flex-col items-center gap-3 min-w-[60px] bg-primary/10 rounded-lg py-2"
+                  >
+                    <p class="text-xs font-bold text-primary">3 PM</p>
+                    <span class="material-symbols-outlined text-primary"
+                      >thunderstorm</span
+                    >
+                    <p class="text-lg font-bold text-primary">26°</p>
+                  </div>
+                  <div class="flex flex-col items-center gap-3 min-w-[60px]">
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400"
+                    >
+                      4 PM
+                    </p>
+                    <span class="material-symbols-outlined text-primary"
+                      >cloudy_snowing</span
+                    >
+                    <p class="text-lg font-bold">26°</p>
+                  </div>
+                  <div class="flex flex-col items-center gap-3 min-w-[60px]">
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400"
+                    >
+                      5 PM
+                    </p>
+                    <span class="material-symbols-outlined text-slate-400"
+                      >cloud</span
+                    >
+                    <p class="text-lg font-bold">27°</p>
+                  </div>
+                  <div class="flex flex-col items-center gap-3 min-w-[60px]">
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400"
+                    >
+                      6 PM
+                    </p>
+                    <span class="material-symbols-outlined text-slate-400"
+                      >partly_cloudy_day</span
+                    >
+                    <p class="text-lg font-bold">28°</p>
+                  </div>
+                  <div class="flex flex-col items-center gap-3 min-w-[60px]">
+                    <p
+                      class="text-xs font-bold text-slate-500 dark:text-slate-400"
+                    >
+                      7 PM
+                    </p>
+                    <span class="material-symbols-outlined text-slate-400"
+                      >nights_stay</span
+                    >
+                    <p class="text-lg font-bold">26°</p>
+                  </div>
+                </div>
+              </div>
+              <!-- 7-Day Forecast -->
+              <div class="bg-white dark:bg-[#1c2327] rounded-xl shadow-sm p-6">
+                <h2 class="text-lg font-bold mb-6">7-Day Forecast</h2>
+                <div class="space-y-4">
+                  <!-- Day Row -->
+                  <div
+                    class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800"
+                  >
+                    <p class="w-20 font-medium">Tomorrow</p>
+                    <div class="flex items-center gap-3 flex-1 px-4">
+                      <span class="material-symbols-outlined text-primary"
+                        >thunderstorm</span
+                      >
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Thunderstorms in the afternoon
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="font-bold">28°</span>
+                      <span class="text-slate-400 text-sm">24°</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800"
+                  >
+                    <p class="w-20 font-medium">Wed, 24</p>
+                    <div class="flex items-center gap-3 flex-1 px-4">
+                      <span class="material-symbols-outlined text-yellow-500"
+                        >wb_sunny</span
+                      >
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Mostly sunny and humid
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="font-bold">31°</span>
+                      <span class="text-slate-400 text-sm">26°</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800"
+                  >
+                    <p class="w-20 font-medium">Thu, 25</p>
+                    <div class="flex items-center gap-3 flex-1 px-4">
+                      <span class="material-symbols-outlined text-slate-400"
+                        >cloud</span
+                      >
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Cloudy all day
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="font-bold">29°</span>
+                      <span class="text-slate-400 text-sm">25°</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800"
+                  >
+                    <p class="w-20 font-medium">Fri, 26</p>
+                    <div class="flex items-center gap-3 flex-1 px-4">
+                      <span class="material-symbols-outlined text-primary"
+                        >rainy</span
+                      >
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Heavy monsoon rain showers
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="font-bold">27°</span>
+                      <span class="text-slate-400 text-sm">24°</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800"
+                  >
+                    <p class="w-20 font-medium">Sat, 27</p>
+                    <div class="flex items-center gap-3 flex-1 px-4">
+                      <span class="material-symbols-outlined text-primary"
+                        >thunderstorm</span
+                      >
+                      <p class="text-xs text-slate-500 dark:text-slate-400">
+                        Intermittent thunderstorms
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                      <span class="font-bold">28°</span>
+                      <span class="text-slate-400 text-sm">24°</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Right Column: Alerts & Extra Info -->
+            <div class="col-span-12 xl:col-span-3 space-y-6">
+              <!-- Local Alerts -->
+              <div
+                class="bg-white dark:bg-[#1c2327] rounded-xl shadow-sm overflow-hidden"
+              >
+                <div
+                  class="p-4 bg-red-500/10 dark:bg-red-500/20 flex items-center gap-3"
+                >
+                  <span class="material-symbols-outlined text-red-500"
+                    >warning</span
+                  >
+                  <h3
+                    class="font-bold text-red-600 dark:text-red-400 text-sm uppercase tracking-wide"
+                  >
+                    Weather Alerts
+                  </h3>
+                </div>
+                <div class="p-6 space-y-4">
+                  <div
+                    class="p-4 rounded-lg bg-slate-50 dark:bg-background-dark border-l-4 border-red-500"
+                  >
+                    <h4 class="font-bold text-sm mb-1">
+                      Southwest Monsoon Update
+                    </h4>
+                    <p
+                      class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed"
+                    >
+                      Heavy rainfall (&gt;100mm) expected in Western and
+                      Sabaragamuwa provinces within next 24h.
+                    </p>
+                    <p
+                      class="text-[10px] mt-2 font-bold text-slate-400 uppercase"
+                    >
+                      2 Hours Ago
+                    </p>
+                  </div>
+                  <div
+                    class="p-4 rounded-lg bg-slate-50 dark:bg-background-dark border-l-4 border-yellow-500"
+                  >
+                    <h4 class="font-bold text-sm mb-1">Flood Advisory</h4>
+                    <p
+                      class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed"
+                    >
+                      Minor flooding possible near Kelani River banks. Residents
+                      advised to remain alert.
+                    </p>
+                    <p
+                      class="text-[10px] mt-2 font-bold text-slate-400 uppercase"
+                    >
+                      4 Hours Ago
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <!-- Activity Tracking -->
+              <div class="bg-white dark:bg-[#1c2327] rounded-xl shadow-sm p-6">
+                <h3
+                  class="font-bold text-sm mb-4 uppercase tracking-wider text-slate-500 dark:text-slate-400"
+                >
+                  Activity Outlook
+                </h3>
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-primary"
+                        >surfing</span
+                      >
+                      <p class="text-sm font-medium">Surfing (Hikkaduwa)</p>
+                    </div>
+                    <span
+                      class="text-xs font-bold px-2 py-1 rounded bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
+                      >Great</span
+                    >
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-slate-400"
+                        >hiking</span
+                      >
+                      <p class="text-sm font-medium">Hiking (Ella Rock)</p>
+                    </div>
+                    <span
+                      class="text-xs font-bold px-2 py-1 rounded bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400"
+                      >Fair</span
+                    >
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-slate-400"
+                        >tour</span
+                      >
+                      <p class="text-sm font-medium">Sigiriya Tour</p>
+                    </div>
+                    <span
+                      class="text-xs font-bold px-2 py-1 rounded bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400"
+                      >Poor</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- Secondary Info Card -->
+              <div
+                class="bg-primary rounded-xl p-6 text-white shadow-lg shadow-primary/20"
+              >
+                <h3 class="font-bold mb-2">Fishermen Warning</h3>
+                <p class="text-sm text-white/80 mb-4 leading-relaxed">
+                  Naval and fishing communities are advised not to venture into
+                  the deep sea areas until further notice.
+                </p>
+                <button
+                  class="w-full bg-white/20 hover:bg-white/30 py-2 rounded-lg text-xs font-bold transition-colors"
+                >
+                  Read Full Notice
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

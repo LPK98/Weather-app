@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sri Lanka Map Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1f44f9",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#0f1323",
+                        "card-dark": "#181d35",
+                        "border-dark": "#2f396a",
+                        "muted-text": "#8e99cc"
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom scrollbar for data panels */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101323;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2f396a;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-10 py-3 bg-background-light dark:bg-background-dark z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.1174 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">LankaExplore</h2>
+</div>
+<label class="flex flex-col min-w-80 !h-10 max-w-lg">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden">
+<div class="text-muted-text flex border-none bg-card-dark items-center justify-center pl-4 border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-white focus:outline-0 focus:ring-0 border-none bg-card-dark focus:border-none h-full placeholder:text-muted-text px-4 pl-2 text-base font-normal leading-normal" placeholder="Search Jaffna, Matara, or Colombo..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Forecast</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Activity Tracker</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Reports</a>
+</div>
+<div class="flex gap-2">
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-card-dark text-white hover:bg-border-dark transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-card-dark text-white hover:bg-border-dark transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD5OfXNacevBh6co4J3FsrYx__fCmKKDEPIyR1g0MDd14bkRAlkqsKKsjS7i5Pex5X7YKall882Js5Cr0-Q2CS2YfbwijxEcEUNG_I51s0qN7AzpSxUYrhMUyOBCKhHsEdq7OAEAHbntfyINh7JTPQBw9Yt8XR0GU5unQ3ZrLzv7BTLnoU-QuGb5Z9XD1mwnhgPo3BNNjlyPqK8-dk_4ffFFCMdqsVrwmty4t01Q-dm2KtVlvZQruJ6iWA1aGiCAsRnMM_mo_RwSGU");'></div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden relative">
+<!-- Side Navigation (Data Layers) -->
+<aside class="w-72 h-full flex flex-col justify-between bg-background-dark/95 backdrop-blur-md p-6 border-r border-border-dark z-40">
+<div class="flex flex-col gap-6">
+<div class="flex flex-col">
+<h1 class="text-white text-lg font-bold leading-tight">Data Layers</h1>
+<p class="text-muted-text text-sm font-normal leading-normal">Toggle interactive overlays</p>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/20 border border-primary/50 cursor-pointer">
+<span class="material-symbols-outlined text-primary fill-icon">thermostat</span>
+<p class="text-white text-sm font-semibold leading-normal flex-1">Temperature</p>
+<div class="size-4 rounded-full bg-primary shadow-[0_0_10px_rgba(31,68,249,0.5)]"></div>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-card-dark transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-muted-text group-hover:text-white">air</span>
+<p class="text-muted-text text-sm font-medium leading-normal flex-1 group-hover:text-white">Wind Flow</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-card-dark transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-muted-text group-hover:text-white">water_drop</span>
+<p class="text-muted-text text-sm font-medium leading-normal flex-1 group-hover:text-white">Precipitation</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-card-dark transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-muted-text group-hover:text-white">cloud</span>
+<p class="text-muted-text text-sm font-medium leading-normal flex-1 group-hover:text-white">Cloud Cover</p>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-card-dark transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-muted-text group-hover:text-white">aq</span>
+<p class="text-muted-text text-sm font-medium leading-normal flex-1 group-hover:text-white">Air Quality</p>
+</div>
+</div>
+<div class="pt-6 border-t border-border-dark">
+<p class="text-xs font-bold text-muted-text uppercase tracking-widest mb-4">Legend</p>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-xs text-muted-text">Low</span>
+<div class="h-2 flex-1 mx-2 rounded-full bg-gradient-to-r from-blue-500 via-yellow-400 to-red-500"></div>
+<span class="text-xs text-muted-text">High</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full flex cursor-pointer items-center justify-center rounded-lg h-12 px-4 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110 transition-all">
+<span class="truncate">Update Visualization</span>
+</button>
+</aside>
+<!-- Main Map Area -->
+<section class="flex-1 relative bg-background-dark overflow-hidden">
+<!-- Full Screen Map Content -->
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Detailed dark satellite map of Sri Lanka with temperature heatmap" data-location="Sri Lanka" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCLkgi4KZ0Ol1Jom3kSltEREwwnk-_4mF0jQ3Anm436e4ut107xkNfq9zsOtLy8Dug9rgo2mIwc2RpSCbBnsDJNzPNE4Jah_tYD0COf_ZgCxvLDbpEI2TKhWCwTyuJDvW00Bw3sKab3IW-IRNp4H3_82lPuPvCBr8067ecl55kFoeyx3VsBYiXF73jzP3dOzyUe5OUd3XLmw3N_mD0nPGqSKQkwLfNvNkRQnl-JGF6AREDeU5owqU0YF3uQWahetyPv1q-_ZVagIDQ");'>
+<!-- Simulated Heatmap Overlay (CSS Gradient) -->
+<div class="absolute inset-0 opacity-40 mix-blend-overlay bg-gradient-to-tr from-blue-900/50 via-red-900/40 to-yellow-600/30"></div>
+</div>
+<!-- Map Controls (Floating Top Left) -->
+<div class="absolute top-6 left-6 flex flex-col gap-3">
+<div class="flex flex-col bg-card-dark/90 backdrop-blur rounded-lg shadow-xl border border-border-dark overflow-hidden">
+<button class="flex size-12 items-center justify-center hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="h-[1px] bg-border-dark"></div>
+<button class="flex size-12 items-center justify-center hover:bg-primary transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<button class="flex size-12 items-center justify-center rounded-lg bg-card-dark/90 backdrop-blur shadow-xl border border-border-dark hover:text-primary transition-colors">
+<span class="material-symbols-outlined">near_me</span>
+</button>
+</div>
+<!-- Interactive Marker - Colombo -->
+<div class="absolute top-[60%] left-[42%] group">
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/30 rounded-full animate-ping"></div>
+<div class="relative size-4 bg-primary rounded-full border-2 border-white shadow-[0_0_15px_rgba(31,68,249,0.8)] cursor-pointer"></div>
+<!-- Tooltip -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card-dark px-3 py-1 rounded text-xs whitespace-nowrap border border-border-dark">
+                        Colombo: 29°C
+                    </div>
+</div>
+</div>
+<!-- Timeline Scrub (Bottom Center) -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-[600px] px-8 py-4 bg-card-dark/95 backdrop-blur-md rounded-2xl border border-border-dark shadow-2xl z-40">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-bold text-primary">LIVE NOW</span>
+<span class="text-xs text-muted-text">Forecast: +12 Hours</span>
+</div>
+<div class="relative h-1.5 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-1/3 bg-primary"></div>
+</div>
+<div class="flex justify-between mt-3 px-1">
+<span class="text-[10px] text-muted-text">08:00</span>
+<span class="text-[10px] text-white font-bold">14:25</span>
+<span class="text-[10px] text-muted-text">20:00</span>
+<span class="text-[10px] text-muted-text">02:00</span>
+<span class="text-[10px] text-muted-text">08:00</span>
+</div>
+</div>
+</section>
+<!-- Right Panels (Quick Facts & Stats) -->
+<aside class="w-96 h-full flex flex-col bg-background-dark/95 backdrop-blur-md border-l border-border-dark z-40 overflow-y-auto">
+<div class="p-6">
+<h3 class="text-white text-xl font-bold leading-tight tracking-[-0.015em] mb-1">Quick Facts: Colombo</h3>
+<p class="text-muted-text text-sm mb-6">Western Province, Sri Lanka</p>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-border-dark bg-card-dark/40">
+<div class="flex items-center justify-between">
+<p class="text-muted-text text-xs font-medium">Temp</p>
+<span class="material-symbols-outlined text-primary text-sm">thermostat</span>
+</div>
+<p class="text-white text-2xl font-bold">29°C</p>
+<p class="text-[#0bda65] text-xs font-medium">+2% vs avg</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-border-dark bg-card-dark/40">
+<div class="flex items-center justify-between">
+<p class="text-muted-text text-xs font-medium">Humidity</p>
+<span class="material-symbols-outlined text-primary text-sm">humidity_mid</span>
+</div>
+<p class="text-white text-2xl font-bold">75%</p>
+<p class="text-[#fa6538] text-xs font-medium">-1% vs avg</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-border-dark bg-card-dark/40">
+<div class="flex items-center justify-between">
+<p class="text-muted-text text-xs font-medium">Wind</p>
+<span class="material-symbols-outlined text-primary text-sm">air</span>
+</div>
+<p class="text-white text-2xl font-bold">12 km/h</p>
+<p class="text-[#0bda65] text-xs font-medium">Westerly</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-5 border border-border-dark bg-card-dark/40">
+<div class="flex items-center justify-between">
+<p class="text-muted-text text-xs font-medium">AQI</p>
+<span class="material-symbols-outlined text-primary text-sm">cloud</span>
+</div>
+<p class="text-white text-2xl font-bold">42</p>
+<p class="text-[#0bda65] text-xs font-medium">Good</p>
+</div>
+</div>
+<!-- Activity Insights -->
+<div class="space-y-4">
+<h4 class="text-sm font-bold text-white uppercase tracking-widest border-b border-border-dark pb-2">Activity Tracker</h4>
+<div class="flex items-start gap-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
+<div class="size-10 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">surfing</span>
+</div>
+<div>
+<p class="text-white text-sm font-bold">Coastal Surfing</p>
+<p class="text-muted-text text-xs mt-1">Ideal swells in Mount Lavinia. Wind conditions are favorable for evening sessions.</p>
+<span class="inline-block mt-2 px-2 py-0.5 rounded bg-green-500/20 text-green-400 text-[10px] font-bold">HIGH SUITABILITY</span>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 rounded-xl bg-card-dark/40 border border-border-dark">
+<div class="size-10 rounded-lg bg-border-dark flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-muted-text">hiking</span>
+</div>
+<div>
+<p class="text-white text-sm font-bold">Central Highland Hiking</p>
+<p class="text-muted-text text-xs mt-1">High cloud cover in Kandy. Slight precipitation expected around 4 PM.</p>
+<span class="inline-block mt-2 px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-400 text-[10px] font-bold">MODERATE RISK</span>
+</div>
+</div>
+<div class="p-4 rounded-xl border border-dashed border-border-dark flex flex-col items-center justify-center py-8 opacity-60">
+<span class="material-symbols-outlined text-muted-text mb-2">add_circle</span>
+<p class="text-muted-text text-xs font-medium">Add to Monitor</p>
+</div>
+</div>
+<!-- Mini Chart Area -->
+<div class="mt-8">
+<h4 class="text-sm font-bold text-white uppercase tracking-widest mb-4">Temperature Trend</h4>
+<div class="h-32 w-full bg-card-dark/20 rounded-lg border border-border-dark relative overflow-hidden flex items-end px-2 gap-1">
+<!-- Simulated Chart -->
+<div class="w-full h-12 bg-primary/30 rounded-t" style="height: 40%"></div>
+<div class="w-full h-16 bg-primary/40 rounded-t" style="height: 55%"></div>
+<div class="w-full h-20 bg-primary/60 rounded-t" style="height: 70%"></div>
+<div class="w-full h-24 bg-primary rounded-t" style="height: 85%"></div>
+<div class="w-full h-20 bg-primary/70 rounded-t" style="height: 65%"></div>
+<div class="w-full h-16 bg-primary/40 rounded-t" style="height: 50%"></div>
+<div class="w-full h-12 bg-primary/20 rounded-t" style="height: 35%"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-muted-text">
+<span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Map Legend Footer Overlay -->
+<div class="absolute bottom-6 left-80 z-40 flex items-center gap-6 px-4 py-2 bg-background-dark/80 backdrop-blur rounded-full border border-border-dark shadow-xl">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-blue-500"></div>
+<span class="text-[10px] font-bold text-white">LOW PRECIP</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-yellow-500"></div>
+<span class="text-[10px] font-bold text-white">STORM RISK</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-red-600"></div>
+<span class="text-[10px] font-bold text-white">SEVERE HEAT</span>
+</div>
+<div class="h-4 w-[1px] bg-border-dark"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-sm">schedule</span>
+<span class="text-[10px] font-bold text-white">UPDATED 2 MINS AGO</span>
+</div>
+</div>
+</body></html>

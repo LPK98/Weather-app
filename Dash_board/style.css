@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #e0f2ff;
+  text-align: center;
+  padding-top: 50px;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#result {
+  margin-top: 20px;
+}
+
+#error {
+  color: red;
+}
+#weather-icon {
+  width: 100px;
+  height: 100px;
+}
+#temperature {
+  font-size: 48px;
+  font-weight: bold;
+}
+#description {
+  font-size: 24px;
+  margin-top: 10px;
+}
