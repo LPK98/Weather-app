@@ -3,12 +3,12 @@
  * Uses Leaflet.js for interactive map visualization
  */
 
-const OWM_API_KEY = ""; // Tile layers use the backend proxy key
 const SL_CENTER = [7.8731, 80.7718];
 const SL_ZOOM = 8;
 
 let map = null;
 let markers = [];
+let allCities = [];
 let activeLayer = null;
 let activeCityId = null;
 
@@ -29,7 +29,7 @@ function initMap() {
   setWeatherLayer("temp");
 }
 
-// ─── Weather Tile Layers ──────────────────────────────────────────
+// ─── Weather Tile Layers (proxied through OWM tile CDN) ───────────
 const OWM_LAYERS = {
   temp: "https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=8aa9d1ee7ba9001b7f8c8f0dd61a4326",
   clouds:
@@ -42,6 +42,9 @@ function setWeatherLayer(type) {
   if (activeLayer) map.removeLayer(activeLayer);
   activeLayer = L.tileLayer(OWM_LAYERS[type], { opacity: 0.5, maxZoom: 18 });
   activeLayer.addTo(map);
+  activeLayer.on("tileerror", () => {
+    console.warn("Weather tile failed to load for layer:", type);
+  });
 }
 
 // ─── Layer Buttons ─────────────────────────────────────────────────
@@ -79,14 +82,26 @@ async function fetchExplorerCities() {
   }
 }
 
-async function fetchActivities() {
+async function fetchActivities(city) {
   try {
-    const res = await fetch("/api/activities/");
+    let url = "/api/activities/";
+    if (city) url += `?city=${encodeURIComponent(city)}`;
+    const res = await fetch(url);
     return await res.json();
   } catch (e) {
     console.error("Error fetching activities:", e);
     return [];
   }
+}
+
+// ─── Temp formatting helper ────────────────────────────────────────
+function fmtTemp(celsius) {
+  if (typeof formatTemp === "function") return formatTemp(celsius);
+  return Math.round(celsius) + "°";
+}
+function fmtTempFull(celsius) {
+  if (typeof formatTempFull === "function") return formatTempFull(celsius);
+  return Math.round(celsius) + "°C";
 }
 
 // ─── Render Functions ──────────────────────────────────────────────
@@ -100,16 +115,17 @@ function addCityMarkers(cities) {
       iconSize: [14, 14],
     });
 
+    const w = city.current_weather || {};
     const marker = L.marker([city.latitude, city.longitude], { icon }).addTo(
       map,
     ).bindPopup(`
         <div style="font-family: Inter, sans-serif; min-width: 160px;">
           <h4 style="font-size: 14px; font-weight: 700; margin: 0 0 6px 0;">${city.name}</h4>
           <p style="margin: 2px 0; font-size: 12px;">
-            <strong>${city.current_weather?.temperature ?? "--"}°C</strong> · ${city.current_weather?.description ?? "N/A"}
+            <strong>${w.temperature != null ? fmtTempFull(w.temperature) : "--°C"}</strong> · ${w.description ?? "N/A"}
           </p>
           <p style="margin: 2px 0; font-size: 11px; color: #8e99cc;">
-            Humidity: ${city.current_weather?.humidity ?? "--"}% · Wind: ${city.current_weather?.wind_speed ?? "--"} km/h
+            Humidity: ${w.humidity ?? "--"}% · Wind: ${w.wind_speed ?? "--"} km/h
           </p>
         </div>
       `);
@@ -120,24 +136,20 @@ function addCityMarkers(cities) {
   });
 }
 
-function selectCity(city) {
+async function selectCity(city) {
   activeCityId = city.id;
   document.getElementById("active-city-name").textContent = city.name;
   const w = city.current_weather || {};
-  document.getElementById("active-temp").textContent = w.temperature
-    ? `${w.temperature}°C`
-    : "--°C";
-  document.getElementById("active-humidity").textContent = w.humidity
-    ? `${w.humidity}%`
-    : "--%";
-  document.getElementById("active-wind").textContent = w.wind_speed
-    ? `${w.wind_speed} km/h`
-    : "-- km/h";
+  document.getElementById("active-temp").textContent =
+    w.temperature != null ? fmtTempFull(w.temperature) : "--°C";
+  document.getElementById("active-humidity").textContent =
+    w.humidity != null ? `${w.humidity}%` : "--%";
+  document.getElementById("active-wind").textContent =
+    w.wind_speed != null ? `${w.wind_speed} km/h` : "-- km/h";
   document.getElementById("active-condition").textContent =
-    w.description || "--";
-  document.getElementById("active-pressure").textContent = w.pressure
-    ? `${w.pressure} hPa`
-    : "-- hPa";
+    w.description || w.condition || "--";
+  document.getElementById("active-pressure").textContent =
+    w.pressure != null ? `${w.pressure} hPa` : "-- hPa";
 
   // Highlight active marker
   markers.forEach((m) => {
@@ -152,6 +164,10 @@ function selectCity(city) {
   });
 
   map.flyTo([city.latitude, city.longitude], 10, { duration: 0.8 });
+
+  // Refresh activities for this city
+  const activities = await fetchActivities(city.name);
+  renderActivities(activities);
 }
 
 function renderCitiesList(cities) {
@@ -161,8 +177,9 @@ function renderCitiesList(cities) {
 
   container.innerHTML = cities
     .map((city) => {
-      const temp = city.current_weather?.temperature ?? "--";
-      const desc = city.current_weather?.description ?? "";
+      const w = city.current_weather || {};
+      const temp = w.temperature != null ? fmtTemp(w.temperature) : "--°";
+      const desc = w.description ?? "";
       return `
       <button class="city-item w-full flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
               data-city-id="${city.id}">
@@ -173,7 +190,7 @@ function renderCitiesList(cities) {
             <p class="text-xs text-muted-text">${desc}</p>
           </div>
         </div>
-        <span class="text-sm font-bold">${temp}°</span>
+        <span class="text-sm font-bold">${temp}</span>
       </button>
     `;
     })
@@ -190,7 +207,7 @@ function renderCitiesList(cities) {
 
 function renderActivities(data) {
   const container = document.getElementById("activities-list");
-  if (!data.length) {
+  if (!data || !data.length) {
     container.innerHTML =
       '<p class="text-sm text-muted-text">No activities loaded.</p>';
     return;
@@ -217,6 +234,26 @@ function renderActivities(data) {
     .join("");
 }
 
+// ─── Event Listeners ───────────────────────────────────────────────
+document.addEventListener("cityChanged", (e) => {
+  const cityName = e.detail.city;
+  const found = allCities.find(
+    (c) => c.name.toLowerCase() === cityName.toLowerCase(),
+  );
+  if (found) selectCity(found);
+});
+
+document.addEventListener("unitChanged", () => {
+  // Re-render city list and active city with new unit
+  if (allCities.length) renderCitiesList(allCities);
+  const active = allCities.find((c) => c.id === activeCityId);
+  if (active) {
+    const w = active.current_weather || {};
+    document.getElementById("active-temp").textContent =
+      w.temperature != null ? fmtTempFull(w.temperature) : "--°C";
+  }
+});
+
 // ─── Bootstrap ─────────────────────────────────────────────────────
 async function loadExplorer() {
   initMap();
@@ -225,6 +262,8 @@ async function loadExplorer() {
     fetchExplorerCities(),
     fetchActivities(),
   ]);
+
+  allCities = cities;
 
   if (cities.length) {
     addCityMarkers(cities);

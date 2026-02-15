@@ -52,8 +52,8 @@ class DailyForecastSerializer(serializers.ModelSerializer):
         ]
 
     def get_day_name(self, obj):
-        from datetime import date
-        if obj.date == date.today():
+        from django.utils import timezone
+        if obj.date == timezone.localdate():
             return 'Today'
         days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         return f"{days[obj.date.weekday()]}, {obj.date.day}"
@@ -125,20 +125,30 @@ class ActivityOutlookSerializer(serializers.ModelSerializer):
 
 class ExplorerCitySerializer(serializers.ModelSerializer):
     """City with current weather for map markers"""
-    temperature = serializers.SerializerMethodField()
-    condition = serializers.SerializerMethodField()
+    current_weather = serializers.SerializerMethodField()
+    latitude = serializers.FloatField(source='lat')
+    longitude = serializers.FloatField(source='lon')
 
     class Meta:
         model = City
-        fields = ['id', 'name', 'lat', 'lon', 'province', 'temperature', 'condition']
+        fields = ['id', 'name', 'latitude', 'longitude', 'province', 'current_weather']
 
-    def get_temperature(self, obj):
+    def get_current_weather(self, obj):
         latest = obj.current_weather.first()
-        return latest.temperature if latest else None
-
-    def get_condition(self, obj):
-        latest = obj.current_weather.first()
-        return latest.condition if latest else None
+        if not latest:
+            return None
+        return {
+            'temperature': latest.temperature,
+            'feels_like': latest.feels_like,
+            'condition': latest.condition,
+            'description': latest.description,
+            'icon': latest.icon,
+            'humidity': latest.humidity,
+            'wind_speed': latest.wind_speed,
+            'wind_direction': latest.wind_direction,
+            'pressure': latest.pressure,
+            'clouds': latest.clouds,
+        }
 
 
 class HistoryStatsSerializer(serializers.Serializer):

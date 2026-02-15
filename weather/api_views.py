@@ -110,11 +110,19 @@ class AlertPreferenceView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AlertPreferenceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        # Use update_or_create to avoid duplicates
+        defaults = {
+            'emergency_monsoon': request.data.get('emergency_monsoon', True),
+            'sms_alerts': request.data.get('sms_alerts', False),
+            'email_summary': request.data.get('email_summary', True),
+        }
+        region = request.data.get('region', '')
+        obj, created = AlertPreference.objects.update_or_create(
+            region=region,
+            defaults=defaults
+        )
+        serializer = AlertPreferenceSerializer(obj)
+        return Response(serializer.data, status=201 if created else 200)
 
 
 class HistoryStatsView(APIView):

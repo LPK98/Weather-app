@@ -158,7 +158,11 @@
       >
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-lg font-bold">Hourly Forecast</h2>
-          <span class="text-primary text-sm font-bold">Next 24h</span>
+          <a
+            href="{% url 'history' %}"
+            class="text-primary text-sm font-bold hover:underline"
+            >View All &rarr;</a
+          >
         </div>
         <div
           class="flex gap-6 overflow-x-auto pb-4 custom-scrollbar"
@@ -172,7 +176,14 @@
 
       <!-- 7-Day Forecast -->
       <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
-        <h2 class="text-lg font-bold mb-6">7-Day Forecast</h2>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-lg font-bold">7-Day Forecast</h2>
+          <a
+            href="{% url 'history' %}"
+            class="text-primary text-sm font-bold hover:underline"
+            >View All &rarr;</a
+          >
+        </div>
         <div class="space-y-4" id="daily-container">
           <div class="flex items-center justify-center py-8">
             <div class="loading-spinner"></div>
@@ -188,14 +199,21 @@
         class="bg-white dark:bg-card-dark rounded-xl shadow-sm overflow-hidden"
       >
         <div
-          class="p-4 bg-red-500/10 dark:bg-red-500/20 flex items-center gap-3"
+          class="p-4 bg-red-500/10 dark:bg-red-500/20 flex items-center justify-between gap-3"
         >
-          <span class="material-symbols-outlined text-red-500">warning</span>
-          <h3
-            class="font-bold text-red-600 dark:text-red-400 text-sm uppercase tracking-wide"
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-red-500">warning</span>
+            <h3
+              class="font-bold text-red-600 dark:text-red-400 text-sm uppercase tracking-wide"
+            >
+              Weather Alerts
+            </h3>
+          </div>
+          <a
+            href="{% url 'alerts' %}"
+            class="text-red-500 text-xs font-bold hover:underline"
+            >View All &rarr;</a
           >
-            Weather Alerts
-          </h3>
         </div>
         <div class="p-6 space-y-4" id="alerts-container">
           <div class="flex items-center justify-center py-4">
@@ -206,11 +224,18 @@
 
       <!-- Activity Tracking -->
       <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-6">
-        <h3
-          class="font-bold text-sm mb-4 uppercase tracking-wider text-slate-500 dark:text-slate-400"
-        >
-          Activity Outlook
-        </h3>
+        <div class="flex justify-between items-center mb-4">
+          <h3
+            class="font-bold text-sm uppercase tracking-wider text-slate-500 dark:text-slate-400"
+          >
+            Activity Outlook
+          </h3>
+          <a
+            href="{% url 'explorer' %}"
+            class="text-primary text-xs font-bold hover:underline"
+            >View All &rarr;</a
+          >
+        </div>
         <div class="space-y-4" id="activities-container">
           <div class="flex items-center justify-center py-4">
             <div class="loading-spinner"></div>

@@ -6,6 +6,17 @@
 let historyChart = null;
 let chartType = "line";
 let chartData = null;
+let climateData = null;
+let climateSortKey = "station_name";
+let climateSortAsc = true;
+let visibleColumns = [
+  "station_name",
+  "max_temp",
+  "min_temp",
+  "annual_rainfall",
+  "rainy_days",
+  "sunshine_hours",
+];
 
 // ─── API Functions ─────────────────────────────────────────────────
 async function fetchHistoryStats(city, start, end) {
@@ -42,10 +53,17 @@ async function fetchClimateNormals() {
   }
 }
 
+// ─── Unit Helpers ──────────────────────────────────────────────────
+function fmtTemp(val) {
+  const unit = window.LW?.unit || "C";
+  if (unit === "F") return `${((val * 9) / 5 + 32).toFixed(1)}°F`;
+  return `${val}°C`;
+}
+
 // ─── Render Functions ──────────────────────────────────────────────
 function renderStats(data) {
   if (!data) return;
-  document.getElementById("stat-temp").textContent = `${data.avg_temp}°C`;
+  document.getElementById("stat-temp").textContent = fmtTemp(data.avg_temp);
   document.getElementById("stat-rainfall").textContent =
     `${data.total_rainfall.toLocaleString()}mm`;
   document.getElementById("stat-humidity").textContent =
@@ -80,6 +98,8 @@ function renderChart(data) {
   if (historyChart) historyChart.destroy();
 
   const metric = document.getElementById("filter-metric").value;
+  const unit = window.LW?.unit || "C";
+  const tempLabel = unit === "F" ? "Temperature (°F)" : "Temperature (°C)";
 
   const datasets = [];
   if (metric === "all" || metric === "rainfall") {
@@ -94,9 +114,13 @@ function renderChart(data) {
     });
   }
   if (metric === "all" || metric === "temperature") {
+    const tempData =
+      unit === "F"
+        ? data.temperature.map((t) => parseFloat(((t * 9) / 5 + 32).toFixed(1)))
+        : data.temperature;
     datasets.push({
-      label: "Temperature (°C)",
-      data: data.temperature,
+      label: tempLabel,
+      data: tempData,
       borderColor: "#f97316",
       backgroundColor: "rgba(249, 115, 22, 0.15)",
       fill: metric !== "all",
@@ -163,22 +187,53 @@ function renderChart(data) {
 
 function renderClimateTable(data) {
   if (!data) return;
-  const tbody = document.getElementById("climate-tbody");
+  climateData = data;
 
-  tbody.innerHTML = data
+  // Sort
+  const sorted = [...data].sort((a, b) => {
+    const aVal = a[climateSortKey];
+    const bVal = b[climateSortKey];
+    const cmp =
+      typeof aVal === "string" ? aVal.localeCompare(bVal) : aVal - bVal;
+    return climateSortAsc ? cmp : -cmp;
+  });
+
+  const tbody = document.getElementById("climate-tbody");
+  const colMap = {
+    station_name: (r) =>
+      `<td class="py-3 px-4 font-medium">${r.station_name}</td>`,
+    max_temp: (r) => `<td class="py-3 px-4 text-right">${r.max_temp}</td>`,
+    min_temp: (r) => `<td class="py-3 px-4 text-right">${r.min_temp}</td>`,
+    annual_rainfall: (r) =>
+      `<td class="py-3 px-4 text-right">${r.annual_rainfall.toLocaleString()}</td>`,
+    rainy_days: (r) => `<td class="py-3 px-4 text-right">${r.rainy_days}</td>`,
+    sunshine_hours: (r) =>
+      `<td class="py-3 px-4 text-right">${r.sunshine_hours.toLocaleString()}</td>`,
+  };
+
+  tbody.innerHTML = sorted
     .map(
       (row) => `
     <tr class="border-b border-slate-100 dark:border-border-dark hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-      <td class="py-3 px-4 font-medium">${row.station_name}</td>
-      <td class="py-3 px-4 text-right">${row.max_temp}</td>
-      <td class="py-3 px-4 text-right">${row.min_temp}</td>
-      <td class="py-3 px-4 text-right">${row.annual_rainfall.toLocaleString()}</td>
-      <td class="py-3 px-4 text-right">${row.rainy_days}</td>
-      <td class="py-3 px-4 text-right">${row.sunshine_hours.toLocaleString()}</td>
+      ${visibleColumns.map((c) => colMap[c](row)).join("")}
     </tr>
   `,
     )
     .join("");
+
+  // Update header visibility
+  const headers = document.querySelectorAll("#climate-thead th");
+  const allCols = [
+    "station_name",
+    "max_temp",
+    "min_temp",
+    "annual_rainfall",
+    "rainy_days",
+    "sunshine_hours",
+  ];
+  headers.forEach((h, i) => {
+    h.style.display = visibleColumns.includes(allCols[i]) ? "" : "none";
+  });
 }
 
 // ─── Chart Type Toggle ─────────────────────────────────────────────
@@ -193,6 +248,94 @@ document.querySelectorAll(".chart-type-btn").forEach((btn) => {
     chartType = btn.dataset.type;
     if (chartData) renderChart(chartData);
   });
+});
+
+// ─── Sort By Dropdown ──────────────────────────────────────────────
+document.getElementById("sort-by-btn")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const existing = document.getElementById("sort-dropdown");
+  if (existing) {
+    existing.remove();
+    return;
+  }
+
+  const labels = {
+    station_name: "Station",
+    max_temp: "Max Temp",
+    min_temp: "Min Temp",
+    annual_rainfall: "Rainfall",
+    rainy_days: "Rainy Days",
+    sunshine_hours: "Sunshine",
+  };
+  const dd = document.createElement("div");
+  dd.id = "sort-dropdown";
+  dd.className =
+    "absolute right-0 top-full mt-1 bg-white dark:bg-card-dark rounded-lg shadow-xl border border-slate-200 dark:border-border-dark py-1 z-20 min-w-[160px]";
+  dd.innerHTML = Object.entries(labels)
+    .map(
+      ([k, v]) =>
+        `<button class="w-full text-left px-4 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 ${climateSortKey === k ? "text-primary font-bold" : ""}" data-col="${k}">${v} ${climateSortKey === k ? (climateSortAsc ? "↑" : "↓") : ""}</button>`,
+    )
+    .join("");
+  e.target.closest(".relative, .flex").style.position = "relative";
+  e.target.closest(".flex").appendChild(dd);
+
+  dd.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (climateSortKey === btn.dataset.col) climateSortAsc = !climateSortAsc;
+      else {
+        climateSortKey = btn.dataset.col;
+        climateSortAsc = true;
+      }
+      dd.remove();
+      renderClimateTable(climateData);
+    });
+  });
+  document.addEventListener("click", () => dd.remove(), { once: true });
+});
+
+// ─── Columns Toggle ────────────────────────────────────────────────
+document.getElementById("columns-btn")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const existing = document.getElementById("columns-dropdown");
+  if (existing) {
+    existing.remove();
+    return;
+  }
+
+  const labels = {
+    station_name: "Station",
+    max_temp: "Max Temp",
+    min_temp: "Min Temp",
+    annual_rainfall: "Rainfall",
+    rainy_days: "Rainy Days",
+    sunshine_hours: "Sunshine",
+  };
+  const dd = document.createElement("div");
+  dd.id = "columns-dropdown";
+  dd.className =
+    "absolute right-0 top-full mt-1 bg-white dark:bg-card-dark rounded-lg shadow-xl border border-slate-200 dark:border-border-dark py-1 z-20 min-w-[160px]";
+  dd.innerHTML = Object.entries(labels)
+    .map(
+      ([k, v]) =>
+        `<label class="flex items-center gap-2 px-4 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+      <input type="checkbox" ${visibleColumns.includes(k) ? "checked" : ""} ${k === "station_name" ? "disabled" : ""} data-col="${k}" class="rounded text-primary focus:ring-primary"> ${v}
+    </label>`,
+    )
+    .join("");
+  e.target.closest(".flex").style.position = "relative";
+  e.target.closest(".flex").appendChild(dd);
+
+  dd.querySelectorAll("input").forEach((cb) => {
+    cb.addEventListener("change", () => {
+      if (cb.checked && !visibleColumns.includes(cb.dataset.col))
+        visibleColumns.push(cb.dataset.col);
+      else if (!cb.checked)
+        visibleColumns = visibleColumns.filter((c) => c !== cb.dataset.col);
+      renderClimateTable(climateData);
+    });
+  });
+  document.addEventListener("click", () => dd.remove(), { once: true });
 });
 
 // ─── Filters ───────────────────────────────────────────────────────
@@ -241,6 +384,23 @@ document.getElementById("export-csv").addEventListener("click", () => {
 
 document.getElementById("export-pdf").addEventListener("click", () => {
   window.print();
+});
+
+// ─── Event Listeners ───────────────────────────────────────────────
+document.addEventListener("cityChanged", (e) => {
+  document.getElementById("filter-city").value = e.detail.city;
+  loadHistory();
+});
+
+document.addEventListener("unitChanged", () => {
+  // Re-render stats and chart with new unit
+  if (chartData) renderChart(chartData);
+  const statsEl = document.getElementById("stat-temp");
+  if (statsEl && statsEl._rawValue !== undefined) {
+    statsEl.textContent = fmtTemp(statsEl._rawValue);
+  }
+  // Reload to re-render all stats
+  loadHistory();
 });
 
 // ─── Load All Data ─────────────────────────────────────────────────

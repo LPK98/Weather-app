@@ -79,6 +79,7 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
     {% block extra_head %}{% endblock %}
   </head>
 
@@ -156,16 +157,16 @@
         </div>
       </aside>
 
+      <!-- Mobile backdrop -->
+      <div
+        class="fixed inset-0 bg-black/50 z-30 hidden"
+        id="sidebar-backdrop"
+      ></div>
+
       <!-- Mobile sidebar toggle -->
       <button
         class="lg:hidden fixed top-4 left-4 z-50 bg-primary text-white p-2 rounded-lg shadow-lg"
         id="mobile-menu-btn"
-        onclick="
-          document.getElementById('sidebar').classList.toggle('hidden');
-          document.getElementById('sidebar').classList.toggle('fixed');
-          document.getElementById('sidebar').classList.toggle('z-40');
-          document.getElementById('sidebar').classList.toggle('h-full');
-        "
       >
         <span class="material-symbols-outlined">menu</span>
       </button>
@@ -208,6 +209,16 @@
                 °F
               </button>
             </div>
+            <!-- Dark mode toggle -->
+            <button
+              class="p-2 text-slate-500 hover:text-primary transition-colors"
+              id="dark-mode-btn"
+              title="Toggle dark mode"
+            >
+              <span class="material-symbols-outlined" id="dark-mode-icon"
+                >dark_mode</span
+              >
+            </button>
             <a
               href="{% url 'alerts' %}"
               class="p-2 text-slate-500 hover:text-primary transition-colors relative"
@@ -243,10 +254,18 @@
 
     <!-- Global scripts -->
     <script>
-      // Global state
+      // ─── Dark Mode ──────────────────────────────────────────────
+      (function () {
+        const saved = localStorage.getItem("lw-dark-mode");
+        if (saved === "false") {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+
+      // ─── Global state (restore from localStorage) ────────────
       window.LW = {
-        currentCity: "Colombo",
-        unit: "C",
+        currentCity: localStorage.getItem("lw-city") || "Colombo",
+        unit: localStorage.getItem("lw-unit") || "C",
         apiBase: "",
       };
 
@@ -263,10 +282,39 @@
         return Math.round(celsius) + "°C";
       }
 
+      // ─── Restore unit toggle UI from saved preference ──────
+      (function () {
+        if (window.LW.unit === "F") {
+          document.querySelectorAll(".unit-btn").forEach((b) => {
+            b.classList.remove(
+              "bg-white",
+              "dark:bg-primary",
+              "text-slate-900",
+              "dark:text-white",
+              "font-bold",
+              "shadow-sm",
+            );
+            b.classList.add("text-slate-500", "font-medium");
+            if (b.dataset.unit === "F") {
+              b.classList.remove("text-slate-500", "font-medium");
+              b.classList.add(
+                "bg-white",
+                "dark:bg-primary",
+                "text-slate-900",
+                "dark:text-white",
+                "font-bold",
+                "shadow-sm",
+              );
+            }
+          });
+        }
+      })();
+
       // Unit toggle
       document.querySelectorAll(".unit-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           window.LW.unit = btn.dataset.unit;
+          localStorage.setItem("lw-unit", btn.dataset.unit);
           document.querySelectorAll(".unit-btn").forEach((b) => {
             b.classList.remove(
               "bg-white",
@@ -296,12 +344,13 @@
         });
       });
 
-      // Global search
+      // Global search - persist city and dispatch event
       document
         .getElementById("global-search")
         .addEventListener("keydown", (e) => {
           if (e.key === "Enter" && e.target.value.trim()) {
             window.LW.currentCity = e.target.value.trim();
+            localStorage.setItem("lw-city", window.LW.currentCity);
             document.dispatchEvent(
               new CustomEvent("cityChanged", {
                 detail: { city: window.LW.currentCity },
@@ -310,7 +359,11 @@
           }
         });
 
-      // Fetch alert badge count
+      // Restore search input from saved city
+      document.getElementById("global-search").value =
+        window.LW.currentCity !== "Colombo" ? window.LW.currentCity : "";
+
+      // ─── Alert badge with auto-refresh ─────────────────────
       async function updateAlertBadge() {
         try {
           const res = await fetch("/api/alerts/stats/");
@@ -319,10 +372,49 @@
           if (data.total > 0) {
             badge.textContent = data.total;
             badge.style.display = "flex";
+          } else {
+            badge.style.display = "none";
           }
         } catch (e) {}
       }
       updateAlertBadge();
+      setInterval(updateAlertBadge, 60000); // refresh every 60s
+
+      // ─── Dark mode toggle ──────────────────────────────────
+      document.getElementById("dark-mode-btn").addEventListener("click", () => {
+        const html = document.documentElement;
+        const isDark = html.classList.toggle("dark");
+        localStorage.setItem("lw-dark-mode", isDark);
+        document.getElementById("dark-mode-icon").textContent = isDark
+          ? "dark_mode"
+          : "light_mode";
+      });
+      // set icon on load
+      if (!document.documentElement.classList.contains("dark")) {
+        document.getElementById("dark-mode-icon").textContent = "light_mode";
+      }
+
+      // ─── Mobile menu toggle with backdrop ──────────────────
+      (function () {
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("sidebar-backdrop");
+        const menuBtn = document.getElementById("mobile-menu-btn");
+
+        function toggleSidebar() {
+          sidebar.classList.toggle("hidden");
+          sidebar.classList.toggle("fixed");
+          sidebar.classList.toggle("z-40");
+          sidebar.classList.toggle("h-full");
+          backdrop.classList.toggle("hidden");
+        }
+        menuBtn.addEventListener("click", toggleSidebar);
+        backdrop.addEventListener("click", toggleSidebar);
+      })();
+
+      // ─── Export Report button ──────────────────────────────
+      document.getElementById("export-btn").addEventListener("click", () => {
+        window.print();
+      });
     </script>
     {% block extra_scripts %}{% endblock %}
   </body>

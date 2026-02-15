@@ -229,11 +229,13 @@
       <h2 class="text-lg font-bold">Climate Normals</h2>
       <div class="flex items-center gap-2">
         <button
+          id="columns-btn"
           class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-500"
         >
           Columns
         </button>
         <button
+          id="sort-by-btn"
           class="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-500"
         >
           Sort By
@@ -242,7 +244,7 @@
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
-        <thead>
+        <thead id="climate-thead">
           <tr class="border-b border-slate-200 dark:border-border-dark">
             <th
               class="text-left py-3 px-4 font-bold text-xs uppercase tracking-wider text-slate-500 dark:text-muted-text"
