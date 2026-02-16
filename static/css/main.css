@@ -87,3 +87,53 @@ body {
 .dark .chartjs-tooltip {
   background: #181d35 !important;
 }
+
+/* Settings modal dropdown (profile) styling */
+#settings-modal select {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  color: #0f1724;
+  border: 1px solid rgba(96, 122, 251, 0.12);
+  padding: 0.5rem 0.75rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  accent-color: #607afb;
+}
+#settings-modal select:focus {
+  outline: none;
+  border-color: #607afb;
+  box-shadow: 0 0 0 4px rgba(96, 122, 251, 0.08);
+}
+#settings-modal select option {
+  background: #ffffff;
+  color: #0f1724;
+}
+#settings-modal select option:checked,
+#settings-modal select option[selected] {
+  background: rgba(96, 122, 251, 0.06);
+  color: #607afb;
+}
+
+/* Dark mode support */
+.dark #settings-modal select {
+  background: linear-gradient(180deg, #0f1723 0%, #121826 100%);
+  color: #e6eef8;
+  border: 1px solid rgba(96, 122, 251, 0.08);
+}
+.dark #settings-modal select option {
+  background: #0f1723;
+  color: #e6eef8;
+}
+.dark #settings-modal select option:checked,
+.dark #settings-modal select option[selected] {
+  background: rgba(96, 122, 251, 0.12);
+  color: #cfe0ff;
+}
+
+/* Small accessibility tweak for Windows/Edge dropdown arrow */
+#settings-modal select::-ms-expand {
+  color: #607afb;
+}

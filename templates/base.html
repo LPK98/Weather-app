@@ -146,12 +146,22 @@
               >
             </div>
             <div class="flex-1 overflow-hidden">
-              <p class="text-sm font-medium truncate">Navin Perera</p>
+              {% if request.user.is_authenticated %}
+              <p class="text-sm font-medium truncate">
+                {{ request.user.get_full_name|default:request.user.username }}
+              </p>
+              {% if request.user.profile.is_premium %}
               <p class="text-xs text-slate-500 truncate">Premium Member</p>
+              {% else %}
+              <p class="text-xs text-slate-500 truncate">Free Member</p>
+              {% endif %} {% else %}
+              <p class="text-sm font-medium truncate">Guest</p>
+              <p class="text-xs text-slate-500 truncate">Sign in</p>
+              {% endif %}
             </div>
-            <span class="material-symbols-outlined text-slate-400 text-sm"
-              >settings</span
-            >
+            <button id="open-settings" class="text-slate-400 text-sm">
+              <span class="material-symbols-outlined">settings</span>
+            </button>
           </div>
         </div>
       </aside>
@@ -241,6 +251,8 @@
       </main>
     </div>
 
+    {% include '_settings_modal.html' %}
+    <script src="{% static 'js/settings.js' %}"></script>
     <!-- Global scripts -->
     <script>
       // Global state

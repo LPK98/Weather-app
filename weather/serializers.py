@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     City, CurrentWeather, HourlyForecast, DailyForecast,
     WeatherAlert, AlertPreference, HistoricalRecord,
-    ClimateNormal, ActivityOutlook
+    ClimateNormal, ActivityOutlook, Profile
 )
 
 
@@ -121,6 +121,20 @@ class ActivityOutlookSerializer(serializers.ModelSerializer):
     def get_suitability_color(self, obj):
         colors = {'GREAT': 'green', 'FAIR': 'yellow', 'POOR': 'red'}
         return colors.get(obj.suitability, 'gray')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    default_city_name = serializers.CharField(source='default_city.name', read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = [
+            'username', 'is_premium', 'unit', 'email_notifications',
+            'default_city', 'default_city_name', 'alert_thresholds',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['username', 'created_at', 'updated_at']
 
 
 class ExplorerCitySerializer(serializers.ModelSerializer):

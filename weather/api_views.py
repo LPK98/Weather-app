@@ -4,16 +4,17 @@ REST API views for the LankaWeather backend.
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Avg, Sum, Count, Q
 from .models import (
     City, CurrentWeather, HourlyForecast, DailyForecast,
     WeatherAlert, AlertPreference, HistoricalRecord,
-    ClimateNormal, ActivityOutlook
+    ClimateNormal, ActivityOutlook, Profile
 )
 from .serializers import (
     CurrentWeatherSerializer, HourlyForecastSerializer, DailyForecastSerializer,
     WeatherAlertSerializer, AlertPreferenceSerializer, HistoricalRecordSerializer,
-    ClimateNormalSerializer, ActivityOutlookSerializer, ExplorerCitySerializer,
+    ClimateNormalSerializer, ActivityOutlookSerializer, ExplorerCitySerializer, ProfileSerializer,
     HistoryStatsSerializer
 )
 from . import services
@@ -269,3 +270,45 @@ class ExplorerCitiesView(APIView):
         cities = City.objects.prefetch_related('current_weather').all()
         serializer = ExplorerCitySerializer(cities, many=True)
         return Response(serializer.data)
+
+
+class UserProfileView(APIView):
+    """GET/PATCH /api/user/profile/ — per-user settings and preferences"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        profile = getattr(request.user, 'profile', None)
+        if not profile:
+            return Response({'detail': 'Profile not found'}, status=404)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        profile = getattr(request.user, 'profile', None)
+        if not profile:
+            return Response({'detail': 'Profile not found'}, status=404)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+
+class SubscriptionToggleView(APIView):
+    """POST /api/user/subscription/ — mock toggle of premium status (no payment)"""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        profile = getattr(request.user, 'profile', None)
+        if not profile:
+            return Response({'detail': 'Profile not found'}, status=404)
+        # Support explicit action or toggle
+        action = (request.data.get('action') or '').lower()
+        if action == 'enable':
+            profile.is_premium = True
+        elif action == 'disable':
+            profile.is_premium = False
+        else:
+            profile.is_premium = not profile.is_premium
+        profile.save()
+        return Response({'is_premium': profile.is_premium})

@@ -1,0 +1,96 @@
+<div
+  id="settings-modal"
+  class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center"
+>
+  <div
+    class="bg-white dark:bg-card-dark rounded-lg w-full max-w-2xl p-6 shadow-lg"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-bold">Settings</h3>
+      <button id="close-settings" class="text-slate-500">&times;</button>
+    </div>
+
+    <form id="settings-form" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-medium">Temperature Unit</label>
+          <select
+            id="pref-unit"
+            class="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+          >
+            <option value="C">Celsius (°C)</option>
+            <option value="F">Fahrenheit (°F)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium">Email Notifications</label>
+          <div class="mt-1">
+            <label class="inline-flex items-center gap-2 text-sm">
+              <input id="pref-email" type="checkbox" class="form-checkbox" />
+              <span>Receive email summaries</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium">Default City</label>
+        <select
+          id="default-city-select"
+          class="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+        >
+          <option value="">(none)</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-medium"
+            >Rainfall alert threshold (mm)</label
+          >
+          <input
+            id="pref-rainfall"
+            type="number"
+            min="0"
+            step="1"
+            class="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+          />
+        </div>
+        <div class="flex items-center">
+          <button
+            id="save-settings-btn"
+            class="px-4 py-2 bg-primary text-white rounded-md font-bold"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium">Premium status</p>
+          <p id="premium-status" class="text-xs text-muted-text">
+            Not a premium member
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            id="open-premium-page"
+            type="button"
+            class="px-3 py-2 bg-slate-100 rounded-md text-sm"
+          >
+            Manage Premium
+          </button>
+          <button
+            id="toggle-premium-btn"
+            type="button"
+            class="px-4 py-2 bg-primary text-white rounded-md font-bold"
+          >
+            Activate
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

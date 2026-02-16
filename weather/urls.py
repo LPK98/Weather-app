@@ -7,6 +7,7 @@ urlpatterns = [
     path('explorer/', views.explorer_view, name='explorer'),
     path('history/', views.history_view, name='history'),
     path('alerts/', views.alerts_view, name='alerts'),
+    path('premium/', views.premium_view, name='premium'),
 
     # API endpoints
     path('api/weather/current/', api_views.CurrentWeatherView.as_view(), name='api-current-weather'),
@@ -23,4 +24,6 @@ urlpatterns = [
 
     path('api/activities/', api_views.ActivityView.as_view(), name='api-activities'),
     path('api/explorer/cities/', api_views.ExplorerCitiesView.as_view(), name='api-explorer-cities'),
+    path('api/user/profile/', api_views.UserProfileView.as_view(), name='api-user-profile'),
+    path('api/user/subscription/', api_views.SubscriptionToggleView.as_view(), name='api-user-subscription'),
 ]

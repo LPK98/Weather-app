@@ -34,3 +34,11 @@ def explorer_view(request):
         'page': 'explorer',
         'page_title': 'Map Explorer - LankaWeather',
     })
+
+
+def premium_view(request):
+    """Simple Premium information page (MVP - mock activation)."""
+    return render(request, 'premium.html', {
+        'page': 'premium',
+        'page_title': 'Premium - LankaWeather',
+    })
