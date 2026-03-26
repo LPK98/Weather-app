@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 <div class="max-w-4xl mx-auto p-8">
   <div class="bg-white dark:bg-card-dark rounded-xl shadow-sm p-8">
     <div class="flex items-start justify-between">
@@ -29,6 +29,9 @@
             Deactivate
           </button>
         </div>
+        <p id="premium-state" class="text-xs text-slate-500 mt-3">
+          Checking account status...
+        </p>
       </div>
       <div class="w-48 text-center">
         <div class="bg-primary/10 rounded-lg p-6">
@@ -44,4 +47,6 @@
     </div>
   </div>
 </div>
+{% endblock %} {% block extra_scripts %}
+<script src="{% static 'js/premium.js' %}"></script>
 {% endblock %}
