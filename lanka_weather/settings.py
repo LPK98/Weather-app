@@ -17,7 +17,14 @@ load_dotenv(BASE_DIR / '.env')
 # SECURITY
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver').split(',')
+    if host.strip()
+]
+for local_host in ('localhost', '127.0.0.1', 'testserver'):
+    if local_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(local_host)
 
 # OpenWeatherMap API Key
 OPENWEATHERMAP_API_KEY = config('OPENWEATHERMAP_API_KEY')
