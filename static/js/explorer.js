@@ -31,11 +31,10 @@ function initMap() {
 
 // ─── Weather Tile Layers ──────────────────────────────────────────
 const OWM_LAYERS = {
-  temp: "https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=8aa9d1ee7ba9001b7f8c8f0dd61a4326",
-  clouds:
-    "https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=8aa9d1ee7ba9001b7f8c8f0dd61a4326",
-  rain: "https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=8aa9d1ee7ba9001b7f8c8f0dd61a4326",
-  wind: "https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=8aa9d1ee7ba9001b7f8c8f0dd61a4326",
+  temp: "/api/map-tile/temp/{z}/{x}/{y}/",
+  clouds: "/api/map-tile/clouds/{z}/{x}/{y}/",
+  rain: "/api/map-tile/rain/{z}/{x}/{y}/",
+  wind: "/api/map-tile/wind/{z}/{x}/{y}/",
 };
 
 function setWeatherLayer(type) {

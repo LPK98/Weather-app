@@ -1,6 +1,9 @@
 """
 REST API views for the LankaWeather backend.
 """
+import requests as http_requests
+from django.conf import settings as django_settings
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -111,11 +114,17 @@ class AlertPreferenceView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AlertPreferenceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        region = request.data.get('region', 'default')
+        defaults = {
+            'emergency_monsoon': request.data.get('emergency_monsoon', True),
+            'sms_alerts': request.data.get('sms_alerts', False),
+            'email_summary': request.data.get('email_summary', True),
+        }
+        pref, created = AlertPreference.objects.update_or_create(
+            region=region, defaults=defaults
+        )
+        serializer = AlertPreferenceSerializer(pref)
+        return Response(serializer.data, status=201 if created else 200)
 
 
 class HistoryStatsView(APIView):
@@ -312,3 +321,29 @@ class SubscriptionToggleView(APIView):
             profile.is_premium = not profile.is_premium
         profile.save()
         return Response({'is_premium': profile.is_premium})
+
+
+class MapTileProxyView(APIView):
+    """GET /api/map-tile/<layer>/<z>/<x>/<y>/ — proxy OWM tile layers to hide API key."""
+
+    VALID_LAYERS = {
+        'temp': 'temp_new',
+        'clouds': 'clouds_new',
+        'rain': 'precipitation_new',
+        'wind': 'wind_new',
+    }
+
+    def get(self, request, layer, z, x, y):
+        owm_layer = self.VALID_LAYERS.get(layer)
+        if not owm_layer:
+            return Response({'error': 'Invalid layer'}, status=400)
+
+        api_key = django_settings.OPENWEATHERMAP_API_KEY
+        tile_url = f"https://tile.openweathermap.org/map/{owm_layer}/{z}/{x}/{y}.png?appid={api_key}"
+
+        try:
+            resp = http_requests.get(tile_url, timeout=10)
+            resp.raise_for_status()
+            return HttpResponse(resp.content, content_type='image/png')
+        except http_requests.RequestException:
+            return HttpResponse(status=502)

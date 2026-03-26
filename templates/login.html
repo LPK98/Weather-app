@@ -1,0 +1,122 @@
+{% load static %}
+<!doctype html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>{{ page_title|default:"Sign In - LankaWeather" }}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#607AFB",
+              "background-dark": "#0f1323",
+              "card-dark": "#181d35",
+            },
+            fontFamily: { display: ["Inter", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-dark text-white min-h-screen flex items-center justify-center"
+  >
+    <div class="w-full max-w-md mx-4">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-3 mb-2">
+          <div
+            class="bg-primary size-12 rounded-xl flex items-center justify-center text-white"
+          >
+            <span class="material-symbols-outlined text-2xl">tsunami</span>
+          </div>
+          <h1 class="font-bold text-2xl">LankaWeather</h1>
+        </div>
+        <p class="text-slate-400 text-sm">Sign in to access your dashboard</p>
+      </div>
+
+      <!-- Messages -->
+      {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+        <div
+          class="px-4 py-3 rounded-lg text-sm mb-2 {% if message.tags == 'error' %}bg-red-500/20 text-red-400{% else %}bg-green-500/20 text-green-400{% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Login Form -->
+      <div class="bg-card-dark rounded-xl shadow-lg p-8">
+        <form method="post" class="space-y-5">
+          {% csrf_token %}
+          <div>
+            <label
+              for="username"
+              class="block text-sm font-medium text-slate-300 mb-1.5"
+              >Username</label
+            >
+            <input
+              type="text"
+              name="username"
+              id="username"
+              required
+              autofocus
+              class="w-full bg-background-dark border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-slate-500"
+              placeholder="Enter your username"
+            />
+          </div>
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-slate-300 mb-1.5"
+              >Password</label
+            >
+            <input
+              type="password"
+              name="password"
+              id="password"
+              required
+              class="w-full bg-background-dark border border-slate-700 rounded-lg px-4 py-2.5 text-white text-sm focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-slate-500"
+              placeholder="Enter your password"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-primary hover:bg-primary/90 text-white py-2.5 rounded-lg font-bold text-sm transition-colors"
+          >
+            Sign In
+          </button>
+        </form>
+      </div>
+
+      <p class="text-center text-sm text-slate-400 mt-6">
+        Don't have an account?
+        <a
+          href="{% url 'register' %}"
+          class="text-primary font-bold hover:underline"
+          >Create one</a
+        >
+      </p>
+    </div>
+  </body>
+</html>
