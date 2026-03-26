@@ -2,6 +2,11 @@ from django.urls import path
 from . import views, api_views
 
 urlpatterns = [
+    # Authentication
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
+    path('logout/', views.logout_view, name='logout'),
+
     # Page views
     path('', views.dashboard_view, name='dashboard'),
     path('explorer/', views.explorer_view, name='explorer'),
@@ -26,4 +31,7 @@ urlpatterns = [
     path('api/explorer/cities/', api_views.ExplorerCitiesView.as_view(), name='api-explorer-cities'),
     path('api/user/profile/', api_views.UserProfileView.as_view(), name='api-user-profile'),
     path('api/user/subscription/', api_views.SubscriptionToggleView.as_view(), name='api-user-subscription'),
+
+    # Map tile proxy (hides OWM API key from client)
+    path('api/map-tile/<str:layer>/<int:z>/<int:x>/<int:y>/', api_views.MapTileProxyView.as_view(), name='api-map-tile'),
 ]
